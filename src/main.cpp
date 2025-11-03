@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <LibRobus.h>
 #include <MEGA.h>
-
+#include <string.h>
 
 
 void setup() 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <LibRobus.h>
 #include <math.h>
+#include <string.h>
 
 /************
 PID
@@ -227,8 +228,6 @@ flow caculator?
 void pump_50ml()
 
 {
-
     pinMode(POMPE, OUTPUT);
-
 
 }

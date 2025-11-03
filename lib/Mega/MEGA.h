@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <librobus.h>
 #include <MEGA.h>
+#include <string.h>
 
 /**********
 CONSTANTES 
