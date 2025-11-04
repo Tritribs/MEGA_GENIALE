@@ -152,10 +152,10 @@ void tourne(int angleDeg, bool tourneGauche) {
 }
 
 /******************************************************************************************************************************************
-SUIVEUR DE LIGNE
+SUIVEUR DE LIGNE ET CONNEXE
 ******************************************************************************************************************************************/
-
-void FOLLOW_THE_LINE(void)
+  
+void FOLLOW_THE_LINE(void) // fonction pour suivre la ligne et effectuer les virages
 {
 
 #define MOTEUR_GAUCHE 0
@@ -211,6 +211,19 @@ float correction = 0.15; // correction à appliquer pour recentrer
         tourne(90, false);
         return;
     }
+    if ( EtatD == 0 && EtatM == 0 && EtatG == 0)
+    {
+        avance(6);
+        tourne(180, false);
+        MOTOR_SetSpeed(0, 0);
+        MOTOR_SetSpeed(1, 0);
+    }
+}
+
+
+void RETOUR_SUR_LA_LIGNE()  // fair le virage permettant de revenir sur la ligne et de redevenir autonome
+{
+    tourne(90,true);
 }
 
 
