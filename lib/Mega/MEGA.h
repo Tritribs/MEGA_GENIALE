@@ -19,4 +19,6 @@ FONCTION
 **************/
 void FOLLOW_THE_LINE();
 void POMP_50ml();
+void debugCapteurs();  
+   
 #endif
