@@ -6,13 +6,14 @@
 
 void setup() 
 {
-  BoardInit();          
-  delay(300);           
+  //Serial.begin(9600);
+  BoardInit();  
+  initLeds();        
 }
 
 void loop() 
 {
-  FOLLOW_THE_LINE();
+  //FOLLOW_THE_LINE();
 }
 
 

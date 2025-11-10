@@ -244,3 +244,25 @@ void pump_50ml()
     pinMode(POMPE, OUTPUT);
 
 }
+
+/******************************************************************************************************************************************
+LED / BOUTON
+******************************************************************************************************************************************/
+#define PIN_ROUGE 30
+#define PIN_VERT 31
+
+//initialisation de la led rouge et verte
+void initLeds(){
+    pinMode(PIN_ROUGE, OUTPUT);
+    pinMode(PIN_VERT, OUTPUT);
+}
+
+//fait flasher la led qui correspond à la pin envoyé en argument
+void flashLed(int pin){
+    for(int i = 0; i < 5; i++){
+        digitalWrite(pin, HIGH);
+        delay(100);
+        digitalWrite(pin, LOW);
+        delay(100);
+    }
+}
