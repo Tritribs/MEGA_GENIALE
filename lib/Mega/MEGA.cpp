@@ -22,6 +22,9 @@ float Vt0 = vitesseAvance;
 float Vt1 = vitesseAvance;
 static unsigned long lastTime = 0;
 
+// ---- VARIABLES RFID ----
+
+
 
 
 float vitesse = 0.4; // vitesse par défaut
@@ -246,4 +249,32 @@ void pump_50ml()
 {
     pinMode(POMPE, OUTPUT);
 
+}
+
+
+/******************************************************************************************************************************************
+capteur RFID
+******************************************************************************************************************************************/
+
+
+void LectureRFID(char *id_tag, char *incoming, char *i) {
+    if (Serial1.available()) {
+        char crecu = Serial1.read();
+        switch (crecu) {
+            case 0x02:
+                AX_BuzzerON();
+                *i = 0;
+                *incoming = 1;
+                break;
+            case 0x03:
+                AX_BuzzerOFF();
+                *incoming = 0;
+                for (char j = 0; j < 10; j++) Serial.print(id_tag[j]);
+                Serial.println();
+                break;
+            default:
+                if (*incoming) id_tag[(*i)++] = crecu;
+                break;
+        }
+    }
 }

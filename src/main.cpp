@@ -6,17 +6,25 @@
 #define MILIEU 40//
 #define DROITE 38//                    
 
+char id_tag[20];
+char incoming;
+char i;
+
+
 
 void setup() 
 {
-  BoardInit();          
+  BoardInit(); 
+  Serial1.begin(9600);
+  Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
 }
 
 void loop() 
 {
+  LectureRFID(id_tag, &incoming, &i);
  
- FOLLOW_THE_LINE();
+ //FOLLOW_THE_LINE();
   
   /*int EtatG = digitalRead(GAUCHE);
   int EtatM = digitalRead(MILIEU);
