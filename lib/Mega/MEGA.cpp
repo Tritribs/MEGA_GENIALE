@@ -278,7 +278,7 @@ void LectureRFID(char *id_tag, char *incoming, char *i) {
                 break;
         }
     }
-
+}
 /******************************************************************************************************************************************
 nitialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
