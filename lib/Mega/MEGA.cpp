@@ -253,6 +253,8 @@ LED / BOUTON
 ******************************************************************************************************************************************/
 #define PIN_ROUGE 30
 #define PIN_VERT 31
+#define PIN_BOUTON_ON 32 
+#define PIN_BOUTON_EAU 33 
 
 //initialisation de la led rouge et verte
 void initLeds(){
@@ -269,3 +271,18 @@ void flashLed(int pin){
         delay(100);
     }
 }
+
+//initialisation des boutons (À RECHECKER)
+void initBoutons(){
+    pinMode(PIN_BOUTON_ON, INPUT_PULLUP); //peux juste faire pullup
+    pinMode(PIN_BOUTON_EAU, INPUT_PULLUP); //peux juste faire pullup
+}
+
+//retourne vrai si le bouton (associé à la pin envoyé en argument) a été appuyé
+bool isButtonPressed(int pin){
+    return digitalRead(pin) == LOW;
+}
+
+/******************************************************************************************************************************************
+LOGIQUE DU CODE
+******************************************************************************************************************************************/

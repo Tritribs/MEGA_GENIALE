@@ -13,8 +13,10 @@ CONSTANTES
 #define MOTEUR_DROITE 1
 #define PIN_ROUGE 30
 #define PIN_VERT 31
+#define PIN_BOUTON_ON 32 
+#define PIN_BOUTON_EAU 33 
 
-/*************8
+/*************
 FONCTION
 **************/
 void FOLLOW_THE_LINE();
@@ -23,4 +25,8 @@ void debugCapteurs();
    
 void initLeds();
 void flashLed(int pin);
+void initBoutons();
+bool isButtonPressed(int pin);
+
+
 #endif

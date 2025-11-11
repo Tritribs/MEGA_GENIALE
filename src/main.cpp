@@ -9,14 +9,21 @@
 
 void setup() 
 {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   BoardInit();  
-  initLeds();        
+  initLeds();   
+  initBoutons();     
 }
 
 void loop() 
 {
- 
+  /* tests pour les boutons svp les laisser
+  if(isButtonPressed){
+    Serial.println("bouton est pesé");
+  } else {
+    Serial.println("rien");
+  }
+  */
  FOLLOW_THE_LINE();
   
   /*int EtatG = digitalRead(GAUCHE);
