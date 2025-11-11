@@ -156,32 +156,32 @@ void tourne(int angleDeg, bool tourneGauche) {
 SUIVEUR DE LIGNE ET CONNEXE
 ******************************************************************************************************************************************/
   
-void FOLLOW_THE_LINE(void) // fonction pour suivre la ligne et effectuer les virages
+void FOLLOW_THE_LINE(void)
 {
 
 #define MOTEUR_GAUCHE 0
 #define MOTEUR_DROITE 1
 
 // Pins capteurs
-#define GAUCHE 39//                    38
-#define MILIEU 40// rouler a l'envers, || mettre les vitesses negative et inerser les virages
-#define DROITE 38//                    39
+#define CAP_GAUCHE 39//                    38
+#define CAP_MILIEU 40// rouler a l'envers, || mettre les vitesses negative et inerser les virages
+#define CAP_DROITE 38//                    39
 
 // Vitesses
 float vitesseBase = 0.3;
-float correction = 0.15; // correction à appliquer pour recentrer
+float correction = 0.15; 
 
 
-    int EtatG = digitalRead(GAUCHE);
-    int EtatM = digitalRead(MILIEU);
-    int EtatD = digitalRead(DROITE);
+    int EtatG = digitalRead(CAP_GAUCHE);
+    int EtatM = digitalRead(CAP_MILIEU);
+    int EtatD = digitalRead(CAP_DROITE);
 
-    // ---- DEBUG ----
+    
     Serial.print("G: "); Serial.print(EtatG);
     Serial.print(" | M: "); Serial.print(EtatM);
     Serial.print(" | D: "); Serial.println(EtatD);
 
-    // ---- Logique simple 3 états ----
+    // ---- états ----
     if (EtatG == 0) { // Capteur gauche détecte ligne
         MOTOR_SetSpeed(MOTEUR_GAUCHE, vitesseBase - correction);
         MOTOR_SetSpeed(MOTEUR_DROITE, vitesseBase + correction);
@@ -195,16 +195,30 @@ float correction = 0.15; // correction à appliquer pour recentrer
         MOTOR_SetSpeed(MOTEUR_DROITE, vitesseBase - correction);
     }
     else { // Aucun capteur détecte la ligne
-        // Ici on peut juste arrêter ou avancer doucement
+      
         MOTOR_SetSpeed(MOTEUR_GAUCHE, 0.2);
         MOTOR_SetSpeed(MOTEUR_DROITE, 0.2);
     }
+
+
+    ///-----------------------------------
+    if(EtatD==0 && EtatM==0 && EtatG==0)
+    {
+        MOTOR_SetSpeed(1,0);
+        MOTOR_SetSpeed(0,0);
+        delay(2500);
+        tourne(180, true);
+        delay(2500);
+        tourne(90, false);
+    }
+
+
     // ---- virages ----
     if (EtatG == 0 && EtatM == 0) {
         // Virage 90° gauche
         avance(6);
         tourne(90, true);
-        return; // on sort pour éviter de continuer le reste
+        return; 
     }
     else if (EtatD == 0 && EtatM == 0) {
         // Virage 90° droite
@@ -212,20 +226,9 @@ float correction = 0.15; // correction à appliquer pour recentrer
         tourne(90, false);
         return;
     }
-    if ( EtatD == 0 && EtatM == 0 && EtatG == 0)
-    {
-        avance(6);
-        tourne(180, false);
-        MOTOR_SetSpeed(0, 0);
-        MOTOR_SetSpeed(1, 0);
-    }
 }
 
 
-void RETOUR_SUR_LA_LIGNE()  // fair le virage permettant de revenir sur la ligne et de redevenir autonome
-{
-    tourne(90,true);
-}
 
 
 /******************************************************************************************************************************************
@@ -312,5 +315,26 @@ int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
 
         return 0;//ou retourner valeurs selon combinaison pilules et appeler servo-moteurs dans le main
         
+    }
+}
+/******************************************************************************************************************************************
+LED / BOUTON
+******************************************************************************************************************************************/
+#define PIN_ROUGE 30
+#define PIN_VERT 31
+
+//initialisation de la led rouge et verte
+void initLeds(){
+    pinMode(PIN_ROUGE, OUTPUT);
+    pinMode(PIN_VERT, OUTPUT);
+}
+
+//fait flasher la led qui correspond à la pin envoyé en argument
+void flashLed(int pin){
+    for(int i = 0; i < 5; i++){
+        digitalWrite(pin, HIGH);
+        delay(100);
+        digitalWrite(pin, LOW);
+        delay(100);
     }
 }
