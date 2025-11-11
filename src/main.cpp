@@ -7,7 +7,7 @@
 void setup() 
 {
   BoardInit();          
-  delay(300);           
+  delay(300);    
 }
 
 void loop() 
