@@ -18,6 +18,9 @@ void setup()
   Serial1.begin(9600);
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
+  //Serial.begin(9600);
+  // BoardInit();  
+  initLeds();        
 }
 
 void loop() 

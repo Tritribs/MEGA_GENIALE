@@ -2,6 +2,7 @@
 #include <LibRobus.h>
 #include <math.h>
 #include <string.h>
+#include <MEGA.h>
 
 /************
 PID
@@ -276,5 +277,92 @@ void LectureRFID(char *id_tag, char *incoming, char *i) {
                 if (*incoming) id_tag[(*i)++] = crecu;
                 break;
         }
+    }
+
+/******************************************************************************************************************************************
+nitialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
+******************************************************************************************************************************************/
+
+//Creation du tableau de structure avec les informations des patients
+void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
+    
+   struct patient patient0 = {235, 1, 0, 1};//Changer le premier chiffre selon RFID
+   tableau[0] = patient0;
+
+   struct patient patient1 = {234, 0, 1, 1};
+   tableau[1] = patient1;
+
+   struct patient patient2 = {233, 1, 1, 1};
+   tableau[2] = patient2;
+
+   struct patient patient3 = {232, 1, 1, 0};
+   tableau[3] = patient3;
+}
+
+/******************************************************************************************************************************************
+trouver_medicament - Trouver et donner le bon medicament au bon patient
+******************************************************************************************************************************************/
+int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
+    int position_tableau = -1;
+    //Appeler fonction RFID
+    int RFID = 233;//Remplacer par appel de la fonction
+
+    //Verification RFID dans la base de donnes pour trouver le patient
+    for (int i=0; i < NOMBRE_PATIENTS; i++){
+        if (tableau[i].RFID == RFID){
+            position_tableau = i;
+            //Allumer la DEL verte
+            break;
+        }
+    }
+
+    //Si patient pas trouve dans la base de donnees
+    if (position_tableau == -1){//ou utiliser i au lieu?
+        //Allumer la DEL rouge
+        return 0;//Sortir de la fonction et ne pas donner de medicaments
+    }
+    
+    //Verifier si ca fait assez de temps depuis la derniere pilule
+    if (tableau[position_tableau].timeStamp == 0){//Changer valeur
+        //Allumer la DEL rouge
+        return 0;
+    }
+    else{
+        //Trouver les bons medicaments pour le patient
+        if (tableau[position_tableau].medicament1 == 1){
+            //Donner le medicament1
+            //Appeler fonction servo-moteurs pilule1
+        }
+        if (tableau[position_tableau].medicament2 == 1){
+            //Donner le medicament2
+            //Appeler fonction servo-moteur pilule2
+        }
+        
+        //Changer timeStamp pour le patient qui a recu pilule
+        //tableau[i].timestamp = ...;
+
+        return 0;//ou retourner valeurs selon combinaison pilules et appeler servo-moteurs dans le main
+        
+    }
+}
+/******************************************************************************************************************************************
+LED / BOUTON
+******************************************************************************************************************************************/
+#define PIN_ROUGE 30
+#define PIN_VERT 31
+
+//initialisation de la led rouge et verte
+void initLeds(){
+    pinMode(PIN_ROUGE, OUTPUT);
+    pinMode(PIN_VERT, OUTPUT);
+}
+
+//fait flasher la led qui correspond à la pin envoyé en argument
+void flashLed(int pin){
+    for(int i = 0; i < 5; i++){
+        digitalWrite(pin, HIGH);
+        delay(100);
+        digitalWrite(pin, LOW);
+        delay(100);
     }
 }
