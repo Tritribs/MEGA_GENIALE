@@ -27,10 +27,12 @@ FONCTION
 void FOLLOW_THE_LINE();
 void POMP_50ml();
 void debugCapteurs();  
-void LectureRFID(char *id_tag, char *incoming, char *i);
+String LectureRFID();
    
 void initLeds();
 void flashLed(int pin);
+int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]);
+void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]);
 void initBoutons();
 bool isButtonPressed(int pin);
 
@@ -38,6 +40,10 @@ void timerPourBoutonVerreDEau();
 void attendPuce();
 void actionnePompeSiVerrePresent();
 void timerApresEau();
+void initDistributeur();
+void cycleReservoir1();
+void cycleReservoir2();
+void cycleReservoir12();
 
 float litDonneesCapteurIREnCm();
 float retourneDistanceCmMoyenne();
@@ -50,7 +56,7 @@ void initialisation_Tableau_Patient();
 DEFINITION DE LA STRUCTURE
 **************/
 struct patient{
-    int RFID;
+    int RFID;//changer pour char
     int medicament1;
     int medicament2;
     unsigned int timeStamp;

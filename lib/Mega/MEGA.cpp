@@ -257,39 +257,51 @@ void pump_50ml()
 capteur RFID
 ******************************************************************************************************************************************/
 
+String LectureRFID() {
+  static char id_tag[20];
+  static char i = 0;
+  static bool incoming = false;
+  String tag = "";
 
-void LectureRFID(char *id_tag, char *incoming, char *i) {
-    if (Serial1.available()) {
-        char crecu = Serial1.read();
-        switch (crecu) {
-            case 0x02:
-                AX_BuzzerON();
-                *i = 0;
-                *incoming = 1;
-                break;
-            case 0x03:
-                AX_BuzzerOFF();
-                *incoming = 0;
-                for (char j = 0; j < 10; j++) Serial.print(id_tag[j]);
-                Serial.println();
-                break;
-            default:
-                if (*incoming) id_tag[(*i)++] = crecu;
-                break;
+  if (Serial1.available()) {
+    char crecu = Serial1.read();
+
+    switch (crecu) {
+      case 0x02: // Début de trame
+        AX_BuzzerON();
+        i = 0;
+        incoming = true;
+        break;
+
+      case 0x03: // Fin de trame
+        AX_BuzzerOFF();
+        incoming = false;
+        id_tag[i] = '\0';
+        tag = String(id_tag);  // convertir en String pour le retour
+        return tag;            // retourne le tag lu
+        break;
+
+      default:
+        if (incoming && i < 10) {
+          id_tag[i++] = crecu;
         }
+        break;
     }
+  }
+  return ""; // retourne vide si rien lu
 }
+
 /******************************************************************************************************************************************
-nitialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
+initialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
 
 //Creation du tableau de structure avec les informations des patients
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
     
-   struct patient patient0 = {235, 1, 0, 1};//Changer le premier chiffre selon RFID
+   struct patient patient0 = {23, 1, 0, 1};//Changer le premier chiffre selon RFID
    tableau[0] = patient0;
 
-   struct patient patient1 = {234, 0, 1, 1};
+   struct patient patient1 = {24, 0, 1, 1};
    tableau[1] = patient1;
 
    struct patient patient2 = {233, 1, 1, 1};
@@ -311,24 +323,25 @@ int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
     for (int i=0; i < NOMBRE_PATIENTS; i++){
         if (tableau[i].RFID == RFID){
             position_tableau = i;
-            //Allumer la DEL verte
+            flashLed(PIN_VERT);
             break;
         }
     }
 
     //Si patient pas trouve dans la base de donnees
     if (position_tableau == -1){//ou utiliser i au lieu?
-        //Allumer la DEL rouge
+        flashLed(PIN_ROUGE);
         return 0;//Sortir de la fonction et ne pas donner de medicaments
     }
     
     //Verifier si ca fait assez de temps depuis la derniere pilule
     if (tableau[position_tableau].timeStamp == 0){//Changer valeur
-        //Allumer la DEL rouge
+        flashLed(PIN_ROUGE);
         return 0;
     }
     else{
         //Trouver les bons medicaments pour le patient
+        flashLed(PIN_VERT);
         if (tableau[position_tableau].medicament1 == 1){
             //Donner le medicament1
             //Appeler fonction servo-moteurs pilule1
@@ -379,6 +392,49 @@ void initBoutons(){
 bool isButtonPressed(int pin){
     return digitalRead(pin) == LOW;
 }
+/******************************************************************************************************************************************
+Distributeur de pilules
+******************************************************************************************************************************************/
+#define SERVO_ID 0
+
+#define ANGLE_R1   0
+#define ANGLE_R2   180
+#define ANGLE_DROP 90
+
+#define DELAI_PICK 1000
+#define DELAI_DROP 2000
+
+void initDistributeur(){
+    BoardInit();
+    SERVO_Enable(SERVO_ID);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir1(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir2(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir12(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
 
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
