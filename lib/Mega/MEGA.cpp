@@ -389,8 +389,8 @@ Distributeur de pilules
 #define ANGLE_R2   180
 #define ANGLE_DROP 90
 
-#define DELAI_PICK 250
-#define DELAI_DROP 400
+#define DELAI_PICK 1000
+#define DELAI_DROP 2000
 
 void initDistributeur(){
     BoardInit();
@@ -411,7 +411,19 @@ void initDistributeur(){
     delay(DELAI_PICK);
     SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
     delay(DELAI_DROP);
-}
+    }
+
+    void cycleReservoir12(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/

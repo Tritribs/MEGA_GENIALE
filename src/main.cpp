@@ -17,26 +17,27 @@ void setup()
 {
   Serial.begin(9600);
   BoardInit();  
+  /*
   initialisation_Tableau_Patient(tableau);        
   initLeds();   
   initBoutons();     
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
-  delay(300);           
+  delay(300);  */         
 }
 
 void loop() 
 {
-  /* tests pour les boutons svp les laisser
+  /*tests pour les boutons svp les laisser
   if(isButtonPressed){
     Serial.println("bouton est pesé");
   } else {
     Serial.println("rien");
-  }
-  */
+  }*/
+  
   LectureRFID(id_tag, &incoming, &i);
  FOLLOW_THE_LINE();
   
-  /*int EtatG = digitalRead(GAUCHE);
+  int EtatG = digitalRead(GAUCHE);
   int EtatM = digitalRead(MILIEU);
   int EtatD = digitalRead(DROITE);
 
@@ -59,10 +60,13 @@ void loop()
   Serial.println("Robot centré sur la ligne");
   }
   delay(250);
-    */
+    
 
    trouver_medicament(tableau);
+   
 }
+
+
 
 
 

@@ -35,17 +35,14 @@ void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]);
 void initBoutons();
 bool isButtonPressed(int pin);
 
-<<<<<<< Updated upstream
-=======
 void initDistributeur();
 void cycleReservoir1();
 void cycleReservoir2();
-
+void cycleReservoir12();
 
 int trouver_medicament();
 void initialisation_Tableau_Patient();
 
->>>>>>> Stashed changes
 /*************
 DEFINITION DE LA STRUCTURE
 **************/
