@@ -20,6 +20,7 @@ void setup()
   initBoutons();     
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
+
 }
 
 void loop() 
@@ -31,9 +32,10 @@ void loop()
     Serial.println("rien");
   }
   */
+ /*
   LectureRFID(id_tag, &incoming, &i);
  FOLLOW_THE_LINE();
-  
+  */
   /*int EtatG = digitalRead(GAUCHE);
   int EtatM = digitalRead(MILIEU);
   int EtatD = digitalRead(DROITE);

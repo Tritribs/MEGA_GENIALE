@@ -15,6 +15,7 @@ CONSTANTES
 #define PIN_VERT 31
 #define PIN_BOUTON_ON 32 
 #define PIN_BOUTON_EAU 33 
+#define PIN_CAPTEUR_IR 0
 
 //Definir nombre maximum de patients
 #define NOMBRE_PATIENTS 4
@@ -33,6 +34,14 @@ void flashLed(int pin);
 void initBoutons();
 bool isButtonPressed(int pin);
 
+void timerPourBoutonVerreDEau();
+void attendPuce();
+void actionnePompeSiVerrePresent();
+void timerApresEau();
+
+float litDonneesCapteurIREnCm();
+float retourneDistanceCmMoyenne();
+bool vraiSiVerreEstLa();
 
 int trouver_medicament();
 void initialisation_Tableau_Patient();

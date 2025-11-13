@@ -383,3 +383,123 @@ bool isButtonPressed(int pin){
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/
+/*
+Cette fonction attend qu'une puce soit scannée. Lorsque ça arrive, la séquence de base de donnée est démarrée.
+Cette fonction doit être appelée lorsque le suiveur de ligne est arrivé à la chambre d'un patient.
+*/
+void attendPuce(){
+    int puce;
+    //puce = fonction romane qui retourne 0 quand pas puce, id quand il y a puce
+    
+    while (puce == 0){
+        //puce = fonction romane qui retourne 0 quand pas puce, id quand il y a puce
+    }
+    //appel fonction noémie qui démarre séquence pour distributeur de pilule (envoie en argument le id)
+}
+
+/*
+Cette fonction démarre un timer et attend que le bouton pour l'eau se fasse appuyer.
+Si le bouton d'eau est appuyé dans le délai du timer, la séquence du verre d'eau avec le capteur est démarrée.
+Sinon, le suiveur de ligne recommence.
+Cette fonction doit être appelée après que les informations sur les médicaments soient envoyées
+au distributeur de pilules.
+reste encore à tester lorsque les boutons seront fonctionnels*********
+*/
+void timerPourBoutonVerreDEau(){
+    bool vraiSiBoutonEstPese = isButtonPressed(PIN_BOUTON_EAU);
+    int tempsDepart = millis();
+    int tempsTimer = 20000; //20 sec, juste pour tester
+    int tempsMax = tempsDepart + tempsTimer;
+
+    while(!vraiSiBoutonEstPese && millis() < tempsMax){
+        vraiSiBoutonEstPese = isButtonPressed(PIN_BOUTON_EAU);
+    }
+    if(vraiSiBoutonEstPese){
+        //appel fonction vérification verre d'eau pour démarrer séquence du verre d'eau
+    }
+}
+
+/*
+Cette fonction doit être appelée lorsque le bouton d'eau est appuyé.
+Cette fonction vérifie si le verre est présent. Si oui, démarre séquence de pompe, sinon, flash led rouge et retourne suiveur de ligne.
+*/
+void actionnePompeSiVerrePresent(){
+    if(vraiSiVerreEstLa()){
+        flashLed(PIN_VERT);
+        //appel fonction pour démarrer pompe
+        timerApresEau();
+    } else {
+        flashLed(PIN_ROUGE);
+        timerPourBoutonVerreDEau();
+    }
+}
+
+/*
+Cette fonction vérifie si le verre est présent après avoir versé l'eau. 
+Si oui, démarre attend 5 secondes, s'il n'est plus là, retourne suiveur de ligne.
+*/
+void timerApresEau(){
+    bool verreLa = vraiSiVerreEstLa();
+
+    while(!verreLa){
+        delay(5000);
+        verreLa = vraiSiVerreEstLa();
+    }
+}
+
+
+//fonction qui fait timer pour verre avant de partir
+
+/******************************************************************************************************************************************
+CAPTEUR INFRAROUGE
+******************************************************************************************************************************************/
+#define PIN_CAPTEUR_IR 0
+
+//lit la donnée brute de distance du capteur et converti celle-ci en cm (la retourne)
+float litDonneesCapteurIREnCm(){
+    int donneeBrute = ROBUS_ReadIR(PIN_CAPTEUR_IR);
+    //Serial.print("Donnee brute : ");
+    //Serial.println(donneeBrute);
+
+    if (donneeBrute == 0){
+        return -1;
+    }
+    float distanceCm;
+
+    float tension = donneeBrute * (5.0 / 1023.0); //conversion donnée brute en volt
+    distanceCm = 27.86 * pow(tension, -1.15); //conversion volt en cm
+    distanceCm /= 16;
+
+    return distanceCm;
+}
+
+//retourne la moyenne des 40 données prises du capteur de distance
+float retourneDistanceCmMoyenne(){  
+    float somme = 0;
+    float moyenne;
+
+    for(int i = 0; i < 40; i++){
+        float valTemp = litDonneesCapteurIREnCm();
+        
+        if(valTemp == -1){
+            i--;
+        } else{
+            somme += valTemp;
+        }
+        
+    }
+
+    moyenne = somme / 40.0;
+    return moyenne;
+}
+
+//retourne vrai si le verre est là 
+bool vraiSiVerreEstLa(){
+    float distance = retourneDistanceCmMoyenne();
+    float valMax = 0; //A CHANGER (FAIRE TESTS) val qui détermine s'il y a un verre ou non
+
+    if(distance < valMax){ //ou égale??
+        return true;
+    } 
+    return false;
+}
