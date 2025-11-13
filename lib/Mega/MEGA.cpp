@@ -245,12 +245,20 @@ flow caculator?
 */
 #define POMPE 41
 
-void pump_50ml()
+void POMPE_50ml()
+
 
 {
-    pinMode(POMPE, OUTPUT);
-
+    for (int i = 0; i < 3; i++) 
+    {
+        digitalWrite(POMPE, HIGH);
+        delay(2000);
+        digitalWrite(POMPE, LOW);
+        delay(5000);
+    }
+  //digitalWrite(POMPE, LOW);
 }
+
 
 
 /******************************************************************************************************************************************

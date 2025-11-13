@@ -14,26 +14,22 @@ char i;
 
 void setup() 
 {
-  Serial.begin(9600);
-  BoardInit();  
-  initLeds();   
-  initBoutons();     
+  BoardInit(); 
+  Serial1.begin(9600);
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
-  delay(300);           
+  //delay(300);           
+  //Serial.begin(9600);
+  // BoardInit();  
+  //initLeds();        
+  pinMode(41, OUTPUT);
 }
 
 void loop() 
 {
-  /* tests pour les boutons svp les laisser
-  if(isButtonPressed){
-    Serial.println("bouton est pesé");
-  } else {
-    Serial.println("rien");
-  }
-  */
-  LectureRFID(id_tag, &incoming, &i);
- FOLLOW_THE_LINE();
-  
+  //LectureRFID(id_tag, &incoming, &i);
+ 
+ //FOLLOW_THE_LINE();
+  POMPE_50ml();
   /*int EtatG = digitalRead(GAUCHE);
   int EtatM = digitalRead(MILIEU);
   int EtatD = digitalRead(DROITE);
