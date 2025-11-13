@@ -380,7 +380,38 @@ void initBoutons(){
 bool isButtonPressed(int pin){
     return digitalRead(pin) == LOW;
 }
+/******************************************************************************************************************************************
+Distributeur de pilules
+******************************************************************************************************************************************/
+#define SERVO_ID 0
 
+#define ANGLE_R1   0
+#define ANGLE_R2   180
+#define ANGLE_DROP 90
+
+#define DELAI_PICK 250
+#define DELAI_DROP 400
+
+void initDistributeur(){
+    BoardInit();
+    SERVO_Enable(SERVO_ID);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir1(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir2(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+}
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/
