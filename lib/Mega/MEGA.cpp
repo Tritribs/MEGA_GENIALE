@@ -257,28 +257,40 @@ void pump_50ml()
 capteur RFID
 ******************************************************************************************************************************************/
 
+String LectureRFID() {
+  static char id_tag[20];
+  static char i = 0;
+  static bool incoming = false;
+  String tag = "";
 
-void LectureRFID(char *id_tag, char *incoming, char *i) {
-    if (Serial1.available()) {
-        char crecu = Serial1.read();
-        switch (crecu) {
-            case 0x02:
-                AX_BuzzerON();
-                *i = 0;
-                *incoming = 1;
-                break;
-            case 0x03:
-                AX_BuzzerOFF();
-                *incoming = 0;
-                for (char j = 0; j < 10; j++) Serial.print(id_tag[j]);
-                Serial.println();
-                break;
-            default:
-                if (*incoming) id_tag[(*i)++] = crecu;
-                break;
+  if (Serial1.available()) {
+    char crecu = Serial1.read();
+
+    switch (crecu) {
+      case 0x02: // Début de trame
+        AX_BuzzerON();
+        i = 0;
+        incoming = true;
+        break;
+
+      case 0x03: // Fin de trame
+        AX_BuzzerOFF();
+        incoming = false;
+        id_tag[i] = '\0';
+        tag = String(id_tag);  // convertir en String pour le retour
+        return tag;            // retourne le tag lu
+        break;
+
+      default:
+        if (incoming && i < 10) {
+          id_tag[i++] = crecu;
         }
+        break;
     }
+  }
+  return ""; // retourne vide si rien lu
 }
+
 /******************************************************************************************************************************************
 initialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
