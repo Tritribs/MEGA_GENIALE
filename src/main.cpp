@@ -6,6 +6,7 @@
 #define MILIEU 40//
 #define DROITE 38//                    
 
+struct patient tableau[NOMBRE_PATIENTS];
 char id_tag[20];
 char incoming;
 char i;
@@ -14,23 +15,29 @@ char i;
 
 void setup() 
 {
-  BoardInit(); 
-  Serial1.begin(9600);
+  Serial.begin(9600);
+  BoardInit();  
+  /*
+  initialisation_Tableau_Patient(tableau);        
+  initLeds();   
+  initBoutons();     
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
-  //delay(300);           
-  //Serial.begin(9600);
-  // BoardInit();  
-  //initLeds();        
-  pinMode(41, OUTPUT);
+  delay(300);  */         
 }
 
 void loop() 
 {
-  //LectureRFID(id_tag, &incoming, &i);
- 
- //FOLLOW_THE_LINE();
-  POMPE_50ml();
-  /*int EtatG = digitalRead(GAUCHE);
+  /*tests pour les boutons svp les laisser
+  if(isButtonPressed){
+    Serial.println("bouton est pesé");
+  } else {
+    Serial.println("rien");
+  }*/
+  
+  LectureRFID(id_tag, &incoming, &i);
+ FOLLOW_THE_LINE();
+  
+  int EtatG = digitalRead(GAUCHE);
   int EtatM = digitalRead(MILIEU);
   int EtatD = digitalRead(DROITE);
 
@@ -53,8 +60,13 @@ void loop()
   Serial.println("Robot centré sur la ligne");
   }
   delay(250);
-    */
+    
+
+   trouver_medicament(tableau);
+   
 }
+
+
 
 
 
