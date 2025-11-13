@@ -7,19 +7,33 @@
 #define DROITE 38//                    
 
 struct patient tableau[NOMBRE_PATIENTS];
+char id_tag[20];
+char incoming;
+char i;
+
+
 
 void setup() 
 {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   BoardInit();  
-  initLeds();
-
   initialisation_Tableau_Patient(tableau);        
+  initLeds();   
+  initBoutons();     
+  Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
+  delay(300);           
 }
 
 void loop() 
 {
- 
+  /* tests pour les boutons svp les laisser
+  if(isButtonPressed){
+    Serial.println("bouton est pesé");
+  } else {
+    Serial.println("rien");
+  }
+  */
+  LectureRFID(id_tag, &incoming, &i);
  FOLLOW_THE_LINE();
   
   /*int EtatG = digitalRead(GAUCHE);

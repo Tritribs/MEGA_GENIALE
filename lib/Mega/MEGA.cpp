@@ -23,6 +23,9 @@ float Vt0 = vitesseAvance;
 float Vt1 = vitesseAvance;
 static unsigned long lastTime = 0;
 
+// ---- VARIABLES RFID ----
+
+
 
 
 float vitesse = 0.4; // vitesse par défaut
@@ -250,7 +253,32 @@ void pump_50ml()
 }
 
 
+/******************************************************************************************************************************************
+capteur RFID
+******************************************************************************************************************************************/
 
+
+void LectureRFID(char *id_tag, char *incoming, char *i) {
+    if (Serial1.available()) {
+        char crecu = Serial1.read();
+        switch (crecu) {
+            case 0x02:
+                AX_BuzzerON();
+                *i = 0;
+                *incoming = 1;
+                break;
+            case 0x03:
+                AX_BuzzerOFF();
+                *incoming = 0;
+                for (char j = 0; j < 10; j++) Serial.print(id_tag[j]);
+                Serial.println();
+                break;
+            default:
+                if (*incoming) id_tag[(*i)++] = crecu;
+                break;
+        }
+    }
+}
 /******************************************************************************************************************************************
 initialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
@@ -323,6 +351,8 @@ LED / BOUTON
 ******************************************************************************************************************************************/
 #define PIN_ROUGE 30
 #define PIN_VERT 31
+#define PIN_BOUTON_ON 32 
+#define PIN_BOUTON_EAU 33 
 
 //initialisation de la led rouge et verte
 void initLeds(){
@@ -339,3 +369,18 @@ void flashLed(int pin){
         delay(100);
     }
 }
+
+//initialisation des boutons (À RECHECKER)
+void initBoutons(){
+    pinMode(PIN_BOUTON_ON, INPUT_PULLUP); //peux juste faire pullup
+    pinMode(PIN_BOUTON_EAU, INPUT_PULLUP); //peux juste faire pullup
+}
+
+//retourne vrai si le bouton (associé à la pin envoyé en argument) a été appuyé
+bool isButtonPressed(int pin){
+    return digitalRead(pin) == LOW;
+}
+
+/******************************************************************************************************************************************
+LOGIQUE DU CODE
+******************************************************************************************************************************************/
