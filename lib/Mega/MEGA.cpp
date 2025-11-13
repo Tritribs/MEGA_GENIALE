@@ -252,16 +252,16 @@ void pump_50ml()
 
 
 /******************************************************************************************************************************************
-nitialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
+initialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
 
 //Creation du tableau de structure avec les informations des patients
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
     
-   struct patient patient0 = {235, 1, 0, 1};//Changer le premier chiffre selon RFID
+   struct patient patient0 = {23, 1, 0, 1};//Changer le premier chiffre selon RFID
    tableau[0] = patient0;
 
-   struct patient patient1 = {234, 0, 1, 1};
+   struct patient patient1 = {24, 0, 1, 1};
    tableau[1] = patient1;
 
    struct patient patient2 = {233, 1, 1, 1};
@@ -283,24 +283,25 @@ int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
     for (int i=0; i < NOMBRE_PATIENTS; i++){
         if (tableau[i].RFID == RFID){
             position_tableau = i;
-            //Allumer la DEL verte
+            flashLed(PIN_VERT);
             break;
         }
     }
 
     //Si patient pas trouve dans la base de donnees
     if (position_tableau == -1){//ou utiliser i au lieu?
-        //Allumer la DEL rouge
+        flashLed(PIN_ROUGE);
         return 0;//Sortir de la fonction et ne pas donner de medicaments
     }
     
     //Verifier si ca fait assez de temps depuis la derniere pilule
     if (tableau[position_tableau].timeStamp == 0){//Changer valeur
-        //Allumer la DEL rouge
+        flashLed(PIN_ROUGE);
         return 0;
     }
     else{
         //Trouver les bons medicaments pour le patient
+        flashLed(PIN_VERT);
         if (tableau[position_tableau].medicament1 == 1){
             //Donner le medicament1
             //Appeler fonction servo-moteurs pilule1

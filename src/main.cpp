@@ -6,12 +6,15 @@
 #define MILIEU 40//
 #define DROITE 38//                    
 
+struct patient tableau[NOMBRE_PATIENTS];
 
 void setup() 
 {
   //Serial.begin(9600);
   BoardInit();  
-  initLeds();        
+  initLeds();
+
+  initialisation_Tableau_Patient(tableau);        
 }
 
 void loop() 
@@ -43,6 +46,8 @@ void loop()
   }
   delay(250);
     */
+
+   trouver_medicament(tableau);
 }
 
 

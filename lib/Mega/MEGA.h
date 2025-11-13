@@ -27,14 +27,14 @@ void debugCapteurs();
    
 void initLeds();
 void flashLed(int pin);
-int trouver_medicament();
-void initialisation_Tableau_Patient();
+int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]);
+void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]);
 
 /*************
 DEFINITION DE LA STRUCTURE
 **************/
 struct patient{
-    int RFID;
+    int RFID;//changer pour char
     int medicament1;
     int medicament2;
     unsigned int timeStamp;
