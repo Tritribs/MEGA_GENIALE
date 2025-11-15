@@ -207,6 +207,7 @@ float correction = 0.15;
     ///-----------------------------------
     if(EtatD==0 && EtatM==0 && EtatG==0)
     {
+        avance(6);
         MOTOR_SetSpeed(1,0);
         MOTOR_SetSpeed(0,0);
         delay(2500);
@@ -249,14 +250,9 @@ void POMPE_50ml()
 
 
 {
-    for (int i = 0; i < 3; i++) 
-    {
-        digitalWrite(POMPE, HIGH);
-        delay(2000);
-        digitalWrite(POMPE, LOW);
-        delay(5000);
-    }
-  //digitalWrite(POMPE, LOW);
+    digitalWrite(POMPE, HIGH);
+    delay(2000);
+    digitalWrite(POMPE, LOW);
 }
 
 
