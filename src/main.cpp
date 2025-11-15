@@ -16,13 +16,17 @@ char i;
 void setup() 
 {
   Serial.begin(9600);
+  Serial1.begin(9600);
   BoardInit();  
+  Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)"); 
+  delay(300);
   /*
   initialisation_Tableau_Patient(tableau);        
   initLeds();   
   initBoutons();     
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
-  delay(300);  */         
+  delay(300);           
+    */         
 }
 
 void loop() 
@@ -34,35 +38,40 @@ void loop()
     Serial.println("rien");
   }*/
   
-  LectureRFID(id_tag, &incoming, &i);
- FOLLOW_THE_LINE();
-  
-  int EtatG = digitalRead(GAUCHE);
-  int EtatM = digitalRead(MILIEU);
-  int EtatD = digitalRead(DROITE);
-
-    // Affichage simple
-  Serial.print("G: "); Serial.print(EtatG);
-  Serial.print(" | M: "); Serial.print(EtatM);
-  Serial.print(" | D: "); Serial.println(EtatD);
-
-  // Affichage plus détaillé
-  if (EtatG == 0 && EtatM == 0 && EtatD == 0) {
-  Serial.println("TOUS les capteurs détectent la ligne !");
-  } 
-  else if (EtatG == 0 && EtatM == 0) {
-  Serial.println("Virage GAUCHE détecté");
-  } 
-  else if (EtatD == 0 && EtatM == 0) {
-  Serial.println("Virage DROITE détecté");
-  } 
-  else if (EtatM == 0) {
-  Serial.println("Robot centré sur la ligne");
+  String tag = LectureRFID();
+  if (tag != "") {
+    Serial.print("Tag lu : ");
+    Serial.println(tag);
   }
-  delay(250);
+  
+  // FOLLOW_THE_LINE();
+  
+  // int EtatG = digitalRead(GAUCHE);
+  // int EtatM = digitalRead(MILIEU);
+  // int EtatD = digitalRead(DROITE);
+
+  //   // Affichage simple
+  // Serial.print("G: "); Serial.print(EtatG);
+  // Serial.print(" | M: "); Serial.print(EtatM);
+  // Serial.print(" | D: "); Serial.println(EtatD);
+
+  // // Affichage plus détaillé
+  // if (EtatG == 0 && EtatM == 0 && EtatD == 0) {
+  // Serial.println("TOUS les capteurs détectent la ligne !");
+  // } 
+  // else if (EtatG == 0 && EtatM == 0) {
+  // Serial.println("Virage GAUCHE détecté");
+  // } 
+  // else if (EtatD == 0 && EtatM == 0) {
+  // Serial.println("Virage DROITE détecté");
+  // } 
+  // else if (EtatM == 0) {
+  // Serial.println("Robot centré sur la ligne");
+  // }
+  // delay(250);
     
 
-   trouver_medicament(tableau);
+  // trouver_medicament(tableau);
    
 }
 
