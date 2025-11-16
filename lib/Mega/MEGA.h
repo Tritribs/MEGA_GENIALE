@@ -15,6 +15,7 @@ CONSTANTES
 #define PIN_VERT 31
 #define PIN_BOUTON_ON 32 
 #define PIN_BOUTON_EAU 33 
+#define PIN_CAPTEUR_IR 0
 
 //Definir nombre maximum de patients
 #define NOMBRE_PATIENTS 4
@@ -24,9 +25,9 @@ CONSTANTES
 FONCTION
 **************/
 void FOLLOW_THE_LINE();
-void POMP_50ml();
+void POMPE_50ml();
 void debugCapteurs();  
-void LectureRFID(char *id_tag, char *incoming, char *i);
+String LectureRFID();
    
 void initLeds();
 void flashLed(int pin);
@@ -34,6 +35,17 @@ int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]);
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]);
 void initBoutons();
 bool isButtonPressed(int pin);
+
+void attendPuce();
+void verseEauLogique();
+
+void initDistributeur();
+void cycleReservoir1();
+void cycleReservoir2();
+void cycleReservoir12();
+
+int trouver_medicament();
+void initialisation_Tableau_Patient();
 
 /*************
 DEFINITION DE LA STRUCTURE

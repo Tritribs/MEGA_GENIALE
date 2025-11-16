@@ -207,6 +207,7 @@ float correction = 0.15;
     ///-----------------------------------
     if(EtatD==0 && EtatM==0 && EtatG==0)
     {
+        avance(6);
         MOTOR_SetSpeed(1,0);
         MOTOR_SetSpeed(0,0);
         delay(2500);
@@ -245,40 +246,55 @@ flow caculator?
 */
 #define POMPE 41
 
-void pump_50ml()
+void POMPE_50ml()
+
 
 {
-    pinMode(POMPE, OUTPUT);
-
+    digitalWrite(POMPE, HIGH);
+    delay(2000);
+    digitalWrite(POMPE, LOW);
 }
+
 
 
 /******************************************************************************************************************************************
 capteur RFID
 ******************************************************************************************************************************************/
 
+String LectureRFID() {
+  static char id_tag[20];
+  static char i = 0;
+  static bool incoming = false;
+  String tag = "";
 
-void LectureRFID(char *id_tag, char *incoming, char *i) {
-    if (Serial1.available()) {
-        char crecu = Serial1.read();
-        switch (crecu) {
-            case 0x02:
-                AX_BuzzerON();
-                *i = 0;
-                *incoming = 1;
-                break;
-            case 0x03:
-                AX_BuzzerOFF();
-                *incoming = 0;
-                for (char j = 0; j < 10; j++) Serial.print(id_tag[j]);
-                Serial.println();
-                break;
-            default:
-                if (*incoming) id_tag[(*i)++] = crecu;
-                break;
+  if (Serial1.available()) {
+    char crecu = Serial1.read();
+
+    switch (crecu) {
+      case 0x02: // Début de trame
+        AX_BuzzerON();
+        i = 0;
+        incoming = true;
+        break;
+
+      case 0x03: // Fin de trame
+        AX_BuzzerOFF();
+        incoming = false;
+        id_tag[i] = '\0';
+        tag = String(id_tag);  // convertir en String pour le retour
+        return tag;            // retourne le tag lu
+        break;
+
+      default:
+        if (incoming && i < 10) {
+          id_tag[i++] = crecu;
         }
+        break;
     }
+  }
+  return ""; // retourne vide si rien lu
 }
+
 /******************************************************************************************************************************************
 initialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
@@ -372,7 +388,114 @@ void initBoutons(){
 bool isButtonPressed(int pin){
     return digitalRead(pin) == LOW;
 }
+/******************************************************************************************************************************************
+Distributeur de pilules
+******************************************************************************************************************************************/
+#define SERVO_ID 0
+
+#define ANGLE_R1   0
+#define ANGLE_R2   180
+#define ANGLE_DROP 90
+
+#define DELAI_PICK 1000
+#define DELAI_DROP 2000
+
+void initDistributeur(){
+    BoardInit();
+    SERVO_Enable(SERVO_ID);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir1(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir2(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
+    void cycleReservoir12(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
 
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/
+/*
+Cette fonction attend qu'une puce soit scannée. Lorsque ça arrive, la séquence de base de donnée est démarrée.
+Cette fonction doit être appelée lorsque le suiveur de ligne est arrivé à la chambre d'un patient.
+*/
+void attendPuce(){
+    int puce;
+    //puce = fonction romane qui retourne 0 quand pas puce, id quand il y a puce
+    
+    while (puce == 0){
+        //puce = fonction romane qui retourne 0 quand pas puce, id quand il y a puce
+    }
+    //appel fonction noémie qui démarre séquence pour distributeur de pilule (envoie en argument le id)
+}
+
+/*
+Cette fonction gère le versage d'eau, et le timer pour cette action
+*/
+void verseEauLogique(){
+    int chronoEau = 0;
+    int tempsMaxEau = 3000; //à changer pour ce que tristan aura trouvé
+    int tempsDepart = millis();
+    int tempsAttente = 30000; //attend et si pas d'actions après 30 secondes, retourne suiveur de ligne
+
+    //loop pour attendre 30 secondes
+    while (chronoEau < tempsMaxEau && (millis() - tempsDepart) < tempsAttente){
+        int ancienTemps = millis();
+
+        Serial.println(isButtonPressed(PIN_BOUTON_EAU));
+        Serial.println(chronoEau < tempsMaxEau);
+        Serial.println(ROBUS_IsBumper(3));
+
+        //loop pour verser eau et calculer temps
+        while(isButtonPressed(PIN_BOUTON_EAU) && (chronoEau < tempsMaxEau) && ROBUS_IsBumper(3)){
+            int tempsActuel = millis();
+        
+            tempsDepart = 0;
+            chronoEau += (tempsActuel - ancienTemps);
+
+            /*
+            Serial.print("chrono eau : ");
+            Serial.println(chronoEau);
+            Serial.print("ancien temps : ");
+            Serial.println(ancienTemps);
+            Serial.print("temps actuel : ");
+            Serial.println(tempsActuel);
+            Serial.println("**********************************************");
+            */
+
+            ancienTemps = tempsActuel;
+
+            Serial.println("pompe à ON");
+            //appel fonction pompe qui verse eau
+        }
+        Serial.println("pompe à OFF");
+        //appel fonction pompe qui arrête de verser l'eau
+        //ajout flash led rouge si pas bumper?
+
+        if(isButtonPressed(PIN_BOUTON_EAU) && !ROBUS_IsBumper(3)){
+            flashLed(PIN_ROUGE);
+        }
+    }
+    delay(3000);
+
+}

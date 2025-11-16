@@ -10,43 +10,66 @@ struct patient tableau[NOMBRE_PATIENTS];
 char id_tag[20];
 char incoming;
 char i;
+bool bumperArr;
 
 
 
 void setup() 
 {
   Serial.begin(9600);
+  Serial1.begin(9600);
   BoardInit();  
-  initialisation_Tableau_Patient(tableau);        
-  initLeds();   
+  Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)"); 
+  delay(300);
+  pinMode(41, OUTPUT);
   initBoutons();     
+  initLeds();   
+
+  /*
+  initialisation_Tableau_Patient(tableau);        
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
+    */         
 }
 
 void loop() 
 {
-  /* tests pour les boutons svp les laisser
-  if(isButtonPressed){
-    Serial.println("bouton est pesé");
-  } else {
-    Serial.println("rien");
+  //departCodeMegaGenial();
+  //testsTristan();
+
+  /*
+  String tag = LectureRFID();
+  if (tag != "") {
+    Serial.print("Tag lu : ");
+    Serial.println(tag);
   }
   */
-  LectureRFID(id_tag, &incoming, &i);
- FOLLOW_THE_LINE();
+     
+}
+
+void departCodeMegaGenial(){
+  bumperArr = ROBUS_IsBumper(3);
+
+  if (bumperArr)
+  {
+    FOLLOW_THE_LINE();
+  }
   
-  /*int EtatG = digitalRead(GAUCHE);
+}
+
+void testsTristan(){
+  
+  int EtatG = digitalRead(GAUCHE);
   int EtatM = digitalRead(MILIEU);
   int EtatD = digitalRead(DROITE);
 
-    // Affichage simple
+  //Affichage simple
   Serial.print("G: "); Serial.print(EtatG);
   Serial.print(" | M: "); Serial.print(EtatM);
   Serial.print(" | D: "); Serial.println(EtatD);
 
   // Affichage plus détaillé
-  if (EtatG == 0 && EtatM == 0 && EtatD == 0) {
+   if (EtatG == 0 && EtatM == 0 && EtatD == 0) {
   Serial.println("TOUS les capteurs détectent la ligne !");
   } 
   else if (EtatG == 0 && EtatM == 0) {
@@ -59,11 +82,7 @@ void loop()
   Serial.println("Robot centré sur la ligne");
   }
   delay(250);
-    */
-
-   trouver_medicament(tableau);
 }
-
 
 
 
