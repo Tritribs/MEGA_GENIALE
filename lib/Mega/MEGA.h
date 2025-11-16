@@ -36,18 +36,13 @@ void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]);
 void initBoutons();
 bool isButtonPressed(int pin);
 
-void timerPourBoutonVerreDEau();
 void attendPuce();
-void actionnePompeSiVerrePresent();
-void timerApresEau();
+void verseEauLogique();
+
 void initDistributeur();
 void cycleReservoir1();
 void cycleReservoir2();
 void cycleReservoir12();
-
-float litDonneesCapteurIREnCm();
-float retourneDistanceCmMoyenne();
-bool vraiSiVerreEstLa();
 
 int trouver_medicament();
 void initialisation_Tableau_Patient();
