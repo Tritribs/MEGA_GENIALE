@@ -207,6 +207,7 @@ float correction = 0.15;
     ///-----------------------------------
     if(EtatD==0 && EtatM==0 && EtatG==0)
     {
+        avance(6);
         MOTOR_SetSpeed(1,0);
         MOTOR_SetSpeed(0,0);
         delay(2500);
@@ -245,12 +246,15 @@ flow caculator?
 */
 #define POMPE 41
 
-void pump_50ml()
+void POMPE_50ml()
+
 
 {
-    pinMode(POMPE, OUTPUT);
-
+    digitalWrite(POMPE, HIGH);
+    delay(2000);
+    digitalWrite(POMPE, LOW);
 }
+
 
 
 /******************************************************************************************************************************************
