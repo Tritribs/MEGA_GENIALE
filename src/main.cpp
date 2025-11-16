@@ -10,6 +10,7 @@ struct patient tableau[NOMBRE_PATIENTS];
 char id_tag[20];
 char incoming;
 char i;
+bool bumperArr;
 
 
 
@@ -24,9 +25,6 @@ void setup()
   initBoutons();     
   initLeds();   
 
-  verseEauLogique();
-  Serial.println("sorti de la fonction");
-
   /*
   initialisation_Tableau_Patient(tableau);        
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
@@ -36,6 +34,9 @@ void setup()
 
 void loop() 
 {
+  //departCodeMegaGenial();
+  //testsTristan();
+
   /*
   String tag = LectureRFID();
   if (tag != "") {
@@ -43,12 +44,24 @@ void loop()
     Serial.println(tag);
   }
   */
+     
+}
+
+void departCodeMegaGenial(){
+  bumperArr = ROBUS_IsBumper(3);
+
+  if (bumperArr)
+  {
+    FOLLOW_THE_LINE();
+  }
   
- // FOLLOW_THE_LINE();
+}
+
+void testsTristan(){
   
-  // int EtatG = digitalRead(GAUCHE);
-  // int EtatM = digitalRead(MILIEU);
-  // int EtatD = digitalRead(DROITE);
+  int EtatG = digitalRead(GAUCHE);
+  int EtatM = digitalRead(MILIEU);
+  int EtatD = digitalRead(DROITE);
 
   //Affichage simple
   Serial.print("G: "); Serial.print(EtatG);
@@ -69,14 +82,7 @@ void loop()
   Serial.println("Robot centré sur la ligne");
   }
   delay(250);
-    */
-
-  // trouver_medicament(tableau);
-   
 }
-
-
-
 
 
 
