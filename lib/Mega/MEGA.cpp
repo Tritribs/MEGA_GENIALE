@@ -318,9 +318,8 @@ void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
 /******************************************************************************************************************************************
 trouver_medicament - Trouver et donner le bon medicament au bon patient
 ******************************************************************************************************************************************/
-int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
+int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
     int position_tableau = -1;
-    char RFID[20] = "00008926A7";//Remplacer par appel de la fonction
 
     //Verification RFID dans la base de donnes pour trouver le patient
     for (int i=0; i < NOMBRE_PATIENTS; i++){

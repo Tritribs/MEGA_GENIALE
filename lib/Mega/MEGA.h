@@ -31,7 +31,7 @@ String LectureRFID();
    
 void initLeds();
 void flashLed(int pin);
-int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]);
+int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]);
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]);
 void initBoutons();
 bool isButtonPressed(int pin);
@@ -44,8 +44,8 @@ void cycleReservoir1();
 void cycleReservoir2();
 void cycleReservoir12();
 
-int trouver_medicament();
-void initialisation_Tableau_Patient();
+//int trouver_medicament();
+//void initialisation_Tableau_Patient();
 
 /*************
 DEFINITION DE LA STRUCTURE
