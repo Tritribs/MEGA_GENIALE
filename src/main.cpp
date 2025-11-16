@@ -21,10 +21,14 @@ void setup()
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)"); 
   delay(300);
   pinMode(41, OUTPUT);
+  initBoutons();     
+  initLeds();   
+
+  verseEauLogique();
+  Serial.println("sorti de la fonction");
+
   /*
   initialisation_Tableau_Patient(tableau);        
-  initLeds();   
-  initBoutons();     
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
     */         
@@ -32,24 +36,19 @@ void setup()
 
 void loop() 
 {
-  /*tests pour les boutons svp les laisser
-  if(isButtonPressed){
-    Serial.println("bouton est pesé");
-  } else {
-    Serial.println("rien");
-  }*/
-  
-  /*String tag = LectureRFID();
+  /*
+  String tag = LectureRFID();
   if (tag != "") {
     Serial.print("Tag lu : ");
     Serial.println(tag);
   }
   */
-  FOLLOW_THE_LINE();
   
-  /*int EtatG = digitalRead(GAUCHE);
-  int EtatM = digitalRead(MILIEU);
-  int EtatD = digitalRead(DROITE);
+ // FOLLOW_THE_LINE();
+  
+  // int EtatG = digitalRead(GAUCHE);
+  // int EtatM = digitalRead(MILIEU);
+  // int EtatD = digitalRead(DROITE);
 
   //Affichage simple
   Serial.print("G: "); Serial.print(EtatG);
