@@ -286,16 +286,16 @@ initialisation_Tableau_Patient - Initialiser les informations sur les patients d
 //Creation du tableau de structure avec les informations des patients
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
     
-   struct patient patient0 = {23, 1, 0, 1};//Changer le premier chiffre selon RFID
+   struct patient patient0 = {"00008926A7", 1, 0, 1, 999999999};
    tableau[0] = patient0;
 
-   struct patient patient1 = {24, 0, 1, 1};
+   struct patient patient1 = {"48007593EF", 0, 1, 1, 999999999};
    tableau[1] = patient1;
 
-   struct patient patient2 = {233, 1, 1, 1};
+   struct patient patient2 = {"000088E89B", 1, 1, 1, 999999999};
    tableau[2] = patient2;
 
-   struct patient patient3 = {232, 1, 1, 0};
+   struct patient patient3 = {"ABC123", 1, 1, 2, 999999999};
    tableau[3] = patient3;
 }
 
@@ -304,12 +304,11 @@ trouver_medicament - Trouver et donner le bon medicament au bon patient
 ******************************************************************************************************************************************/
 int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
     int position_tableau = -1;
-    //Appeler fonction RFID
-    int RFID = 233;//Remplacer par appel de la fonction
+    char RFID[20] = "00008926A7";//Remplacer par appel de la fonction
 
     //Verification RFID dans la base de donnes pour trouver le patient
     for (int i=0; i < NOMBRE_PATIENTS; i++){
-        if (tableau[i].RFID == RFID){
+        if (strcmp(RFID, tableau[i].RFID) == 0){
             position_tableau = i;
             flashLed(PIN_VERT);
             break;
@@ -317,33 +316,26 @@ int trouver_medicament(struct patient tableau[NOMBRE_PATIENTS]){
     }
 
     //Si patient pas trouve dans la base de donnees
-    if (position_tableau == -1){//ou utiliser i au lieu?
+    if (position_tableau == -1){
         flashLed(PIN_ROUGE);
-        return 0;//Sortir de la fonction et ne pas donner de medicaments
+        return 0;//Sortir de la fonction et ne pas donner de medicaments ou appeler servo-moteurs avec 0,0
     }
     
-    //Verifier si ca fait assez de temps depuis la derniere pilule
-    if (tableau[position_tableau].timeStamp == 0){//Changer valeur
-        flashLed(PIN_ROUGE);
+    //Verifier si ca fait assez de temps depuis le dernier medicament
+    unsigned long temps_maintenant = millis();
+    if ((temps_maintenant - (tableau[position_tableau].temps_dernier_medicament) >= (tableau[position_tableau].horaire * 60 * 1000)) || (tableau[position_tableau].temps_dernier_medicament == 999999999)){
+        flashLed(PIN_VERT);
+
+        //Changer temps_dernier_medicament pour le patient qui a recu son medicament
+        tableau[position_tableau].temps_dernier_medicament = temps_maintenant;
+
+        //appeler fonction alex avec tableau en parametre pour les bons medicaments pour le patient
+        //fonction(tableau[position_tableau].medicament1,tableau[position_tableau].medicament2);
         return 0;
     }
     else{
-        //Trouver les bons medicaments pour le patient
-        flashLed(PIN_VERT);
-        if (tableau[position_tableau].medicament1 == 1){
-            //Donner le medicament1
-            //Appeler fonction servo-moteurs pilule1
-        }
-        if (tableau[position_tableau].medicament2 == 1){
-            //Donner le medicament2
-            //Appeler fonction servo-moteur pilule2
-        }
-        
-        //Changer timeStamp pour le patient qui a recu pilule
-        //tableau[i].timestamp = ...;
-
-        return 0;//ou retourner valeurs selon combinaison pilules et appeler servo-moteurs dans le main
-        
+        flashLed(PIN_ROUGE);
+        return 0;//ou appeler servo-moteurs avec 0,0
     }
 }
 /******************************************************************************************************************************************

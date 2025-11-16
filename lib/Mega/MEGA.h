@@ -39,10 +39,11 @@ bool isButtonPressed(int pin);
 DEFINITION DE LA STRUCTURE
 **************/
 struct patient{
-    int RFID;//changer pour char
+    char RFID[20];
     int medicament1;
     int medicament2;
-    unsigned int timeStamp;
+    unsigned long horaire;
+    unsigned long temps_dernier_medicament;
 };
 
 #endif
