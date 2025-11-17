@@ -40,12 +40,10 @@ void attendPuce();
 void verseEauLogique();
 
 void initDistributeur();
-void distribuerPilules();
+void distribuerPilules(int nbrMed1, int nbrMed2);
 void cycleReservoir1();
 void cycleReservoir2();
 
-//int trouver_medicament();
-//void initialisation_Tableau_Patient();
 
 /*************
 DEFINITION DE LA STRUCTURE

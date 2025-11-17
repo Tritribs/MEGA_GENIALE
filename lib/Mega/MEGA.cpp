@@ -344,8 +344,8 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
         //Changer temps_dernier_medicament pour le patient qui a recu son medicament
         tableau[position_tableau].temps_dernier_medicament = temps_maintenant;
 
-        //appeler fonction alex avec tableau en parametre pour les bons medicaments pour le patient
-        //distribuerPilules(tableau[position_tableau].medicament1,tableau[position_tableau].medicament2);
+        //appeler fonction pour distribuer les bons medicaments pour le patient
+        distribuerPilules(tableau[position_tableau].medicament1,tableau[position_tableau].medicament2);
         return 0;
     }
     else{
