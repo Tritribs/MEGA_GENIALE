@@ -431,17 +431,6 @@ void initDistributeur(){
     delay(DELAI_DROP);
     }
 
-    void cycleReservoir12(){
-    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
-    delay(DELAI_PICK);  
-    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
-    delay(DELAI_DROP);
-    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
-    delay(DELAI_PICK);
-    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
-    delay(DELAI_DROP);
-    }
-
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/

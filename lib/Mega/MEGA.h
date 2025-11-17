@@ -43,7 +43,6 @@ void initDistributeur();
 void distribuerPilules();
 void cycleReservoir1();
 void cycleReservoir2();
-void cycleReservoir12();
 
 //int trouver_medicament();
 //void initialisation_Tableau_Patient();
