@@ -27,7 +27,9 @@ FONCTION
 void FOLLOW_THE_LINE();
 void POMPE_50ml();
 void debugCapteurs();  
-String LectureRFID();
+char* LectureRFID();
+void pompeON();
+void pompeOFF();
    
 void initLeds();
 void flashLed(int pin);

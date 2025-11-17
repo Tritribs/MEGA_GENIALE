@@ -212,8 +212,9 @@ float correction = 0.15;
         MOTOR_SetSpeed(0,0);
         delay(2500);
         tourne(180, true);
-        delay(2500);
+        attendPuce(); //démarre séquence puce
         tourne(90, false);
+
     }
 
 
@@ -255,72 +256,77 @@ void POMPE_50ml()
     digitalWrite(POMPE, LOW);
 }
 
+void pompeON(){
+    digitalWrite(POMPE, HIGH);
+}
 
+void pompeOFF(){
+    digitalWrite(POMPE, LOW);
+}
 
 /******************************************************************************************************************************************
 capteur RFID
 ******************************************************************************************************************************************/
 
-String LectureRFID() {
-  static char id_tag[20];
-  static char i = 0;
-  static bool incoming = false;
-  String tag = "";
+char* LectureRFID() {
+    static char id_tag[20];
+    static char i = 0;
+    static bool incoming = false;
 
-  if (Serial1.available()) {
-    char crecu = Serial1.read();
+    if (Serial1.available()) {
+        char crecu = Serial1.read();
 
-    switch (crecu) {
-      case 0x02: // Début de trame
-        AX_BuzzerON();
-        i = 0;
-        incoming = true;
-        break;
+        switch (crecu) {
+        case 0x02: // Début de trame
+            AX_BuzzerON();
+            i = 0;
+            incoming = true;
+            break;
 
-      case 0x03: // Fin de trame
-        AX_BuzzerOFF();
-        incoming = false;
-        id_tag[i] = '\0';
-        tag = String(id_tag);  // convertir en String pour le retour
-        return tag;            // retourne le tag lu
-        break;
+        case 0x03: // Fin de trame
+            AX_BuzzerOFF();
+            incoming = false;
+            id_tag[i] = '\0';   // terminer la chaîne C
+            return id_tag;      // ***retourner le char[] directement***
 
-      default:
-        if (incoming && i < 10) {
-          id_tag[i++] = crecu;
+        default:
+            if (incoming && i < sizeof(id_tag) - 1) {
+                id_tag[i++] = crecu;
+            }
+            break;
         }
-        break;
     }
-  }
-  return ""; // retourne vide si rien lu
+
+    return NULL; // rien reçu
 }
+
 
 /******************************************************************************************************************************************
 initialisation_Tableau_Patient - Initialiser les informations sur les patients dans le tableau (base de donnees)
 ******************************************************************************************************************************************/
-
+ 
 //Creation du tableau de structure avec les informations des patients
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
-    
+   
    struct patient patient0 = {"00008926A7", 1, 0, 1, 999999999};
    tableau[0] = patient0;
-
+ 
    struct patient patient1 = {"48007593EF", 0, 1, 1, 999999999};
    tableau[1] = patient1;
-
+ 
    struct patient patient2 = {"000088E89B", 1, 1, 1, 999999999};
    tableau[2] = patient2;
-
+ 
    struct patient patient3 = {"ABC123", 1, 1, 2, 999999999};
    tableau[3] = patient3;
 }
-
+ 
 /******************************************************************************************************************************************
 trouver_medicament - Trouver et donner le bon medicament au bon patient
 ******************************************************************************************************************************************/
 int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
     int position_tableau = -1;
-
+ 
     //Verification RFID dans la base de donnes pour trouver le patient
     for (int i=0; i < NOMBRE_PATIENTS; i++){
         if (strcmp(RFID, tableau[i].RFID) == 0){
@@ -329,23 +335,23 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
             break;
         }
     }
-
+ 
     //Si patient pas trouve dans la base de donnees
     if (position_tableau == -1){
         flashLed(PIN_ROUGE);
         return 0;//Sortir de la fonction et ne pas donner de medicaments ou appeler servo-moteurs avec 0,0
     }
-    
+   
     //Verifier si ca fait assez de temps depuis le dernier medicament
     unsigned long temps_maintenant = millis();
     if ((temps_maintenant - (tableau[position_tableau].temps_dernier_medicament) >= (tableau[position_tableau].horaire * 60 * 1000)) || (tableau[position_tableau].temps_dernier_medicament == 999999999)){
         flashLed(PIN_VERT);
-
+ 
         //Changer temps_dernier_medicament pour le patient qui a recu son medicament
         tableau[position_tableau].temps_dernier_medicament = temps_maintenant;
-
-        //appeler fonction alex avec tableau en parametre pour les bons medicaments pour le patient
-        //fonction(tableau[position_tableau].medicament1,tableau[position_tableau].medicament2);
+ 
+        //appeler fonction pour distribuer les bons medicaments pour le patient
+        distribuerPilules(tableau[position_tableau].medicament1,tableau[position_tableau].medicament2);
         return 0;
     }
     else{
@@ -353,6 +359,7 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
         return 0;//ou appeler servo-moteurs avec 0,0
     }
 }
+
 /******************************************************************************************************************************************
 LED / BOUTON
 ******************************************************************************************************************************************/
@@ -406,17 +413,6 @@ void initDistributeur(){
     delay(DELAI_DROP);
     }
 
-    void distribuerPilules(int nbrMed1, int nbrMed2){
-
-    for (int i = 0; i < nbrMed1; i++){
-        cycleReservoir1();
-    }
-
-    for (int i = 0; i < nbrMed2; i++){
-        cycleReservoir2();
-    }
-    }
-
     void cycleReservoir1(){
     SERVO_SetAngle(SERVO_ID, ANGLE_R1);
     delay(DELAI_PICK);  
@@ -431,6 +427,17 @@ void initDistributeur(){
     delay(DELAI_DROP);
     }
 
+    void cycleReservoir12(){
+    SERVO_SetAngle(SERVO_ID, ANGLE_R1);
+    delay(DELAI_PICK);  
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    SERVO_SetAngle(SERVO_ID, ANGLE_R2);
+    delay(DELAI_PICK);
+    SERVO_SetAngle(SERVO_ID, ANGLE_DROP);
+    delay(DELAI_DROP);
+    }
+
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/
@@ -439,13 +446,12 @@ Cette fonction attend qu'une puce soit scannée. Lorsque ça arrive, la séquenc
 Cette fonction doit être appelée lorsque le suiveur de ligne est arrivé à la chambre d'un patient.
 */
 void attendPuce(){
-    int puce;
-    //puce = fonction romane qui retourne 0 quand pas puce, id quand il y a puce
-    
-    while (puce == 0){
-        //puce = fonction romane qui retourne 0 quand pas puce, id quand il y a puce
+    char* puce = LectureRFID();
+
+    while (puce == NULL){
+        puce = LectureRFID();
     }
-    //appel fonction noémie qui démarre séquence pour distributeur de pilule (envoie en argument le id)
+    //trouver_medicament appel fonction noémie
 }
 
 /*
@@ -485,11 +491,10 @@ void verseEauLogique(){
             ancienTemps = tempsActuel;
 
             Serial.println("pompe à ON");
-            //appel fonction pompe qui verse eau
+            pompeON();
         }
         Serial.println("pompe à OFF");
-        //appel fonction pompe qui arrête de verser l'eau
-        //ajout flash led rouge si pas bumper?
+        pompeOFF();
 
         if(isButtonPressed(PIN_BOUTON_EAU) && !ROBUS_IsBumper(3)){
             flashLed(PIN_ROUGE);

@@ -25,6 +25,8 @@ void setup()
   initBoutons();     
   initLeds();   
   initialisation_Tableau_Patient(tableau); 
+
+  verseEauLogique();
  
   /*   
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
