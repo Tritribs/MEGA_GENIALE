@@ -406,6 +406,17 @@ void initDistributeur(){
     delay(DELAI_DROP);
     }
 
+    void distribuerPilules(int nbrMed1, int nbrMed2){
+
+    for (int i = 0; i < nbrMed1; i++){
+        cycleReservoir1();
+    }
+
+    for (int i = 0; i < nbrMed2; i++){
+        cycleReservoir2();
+    }
+    }
+
     void cycleReservoir1(){
     SERVO_SetAngle(SERVO_ID, ANGLE_R1);
     delay(DELAI_PICK);  

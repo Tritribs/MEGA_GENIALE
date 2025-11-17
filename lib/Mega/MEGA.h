@@ -40,6 +40,7 @@ void attendPuce();
 void verseEauLogique();
 
 void initDistributeur();
+void distribuerPilules();
 void cycleReservoir1();
 void cycleReservoir2();
 void cycleReservoir12();
