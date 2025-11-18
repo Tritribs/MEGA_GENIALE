@@ -19,7 +19,7 @@ CONSTANTES
 
 //Definir nombre maximum de patients
 #define NOMBRE_PATIENTS 4
-
+extern struct patient tableauPatients[NOMBRE_PATIENTS];
 
 /*************
 FONCTION

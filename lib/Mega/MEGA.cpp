@@ -23,8 +23,8 @@ float Vt0 = vitesseAvance;
 float Vt1 = vitesseAvance;
 static unsigned long lastTime = 0;
 
-// ---- VARIABLES RFID ----
-
+// ---- VARIABLES BANDE DE DONNÉES PATIENTS ----
+struct patient tableauPatients[NOMBRE_PATIENTS];
 
 
 
@@ -438,6 +438,17 @@ void initDistributeur(){
     delay(DELAI_DROP);
     }
 
+    void distribuerPilules(int nbrMed1, int nbrMed2){
+ 
+    for (int i = 0; i < nbrMed1; i++){
+        cycleReservoir1();
+    }
+ 
+    for (int i = 0; i < nbrMed2; i++){
+        cycleReservoir2();
+    }
+    }
+
 /******************************************************************************************************************************************
 LOGIQUE DU CODE
 ******************************************************************************************************************************************/
@@ -451,7 +462,7 @@ void attendPuce(){
     while (puce == NULL){
         puce = LectureRFID();
     }
-    //trouver_medicament appel fonction noémie
+    trouver_medicament(puce, tableauPatients);
 }
 
 /*

@@ -6,7 +6,6 @@
 #define MILIEU 40//
 #define DROITE 38//                    
 
-struct patient tableau[NOMBRE_PATIENTS];
 char id_tag[20];
 char incoming;
 char i;
@@ -24,7 +23,7 @@ void setup()
   pinMode(41, OUTPUT);
   initBoutons();     
   initLeds();   
-  initialisation_Tableau_Patient(tableau); 
+  initialisation_Tableau_Patient(tableauPatients); 
 
   verseEauLogique();
  
