@@ -24,9 +24,8 @@ void setup()
   initBoutons();     
   initLeds();   
   initialisation_Tableau_Patient(tableauPatients); 
+  
 
-  verseEauLogique();
- 
   /*   
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
@@ -38,13 +37,15 @@ void loop()
   //departCodeMegaGenial();
   //testsTristan();
 
-  /*
-  String tag = LectureRFID();
-  if (tag != "") {
+  /*  
+  char* tag = LectureRFID();
+  if (tag != NULL) {
     Serial.print("Tag lu : ");
     Serial.println(tag);
   }
   */
+  
+  
      
 }
 

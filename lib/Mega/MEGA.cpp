@@ -286,7 +286,9 @@ char* LectureRFID() {
         case 0x03: // Fin de trame
             AX_BuzzerOFF();
             incoming = false;
-            id_tag[i] = '\0';   // terminer la chaîne C
+            id_tag[i-2] = '\0'; //faut mettre i - 2 sinon il y a des caractères random à la fin 
+            //Serial.println(id_tag);
+              // terminer la chaîne C
             return id_tag;      // ***retourner le char[] directement***
 
         default:
@@ -308,13 +310,13 @@ initialisation_Tableau_Patient - Initialiser les informations sur les patients d
 //Creation du tableau de structure avec les informations des patients
 void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
    
-   struct patient patient0 = {"00008926A7", 1, 0, 1, 999999999};
-   tableau[0] = patient0;
+   struct patient patient0 = {"00008926A708", 1, 0, 1, 999999999};
+   tableau[0] = patient0; 
  
-   struct patient patient1 = {"48007593EF", 0, 1, 1, 999999999};
+   struct patient patient1 = {"48007593EF41", 0, 1, 1, 999999999};
    tableau[1] = patient1;
  
-   struct patient patient2 = {"000088E89B", 1, 1, 1, 999999999};
+   struct patient patient2 = {"000088E89BFB", 1, 1, 1, 999999999};
    tableau[2] = patient2;
  
    struct patient patient3 = {"ABC123", 1, 1, 2, 999999999};
@@ -329,9 +331,24 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
  
     //Verification RFID dans la base de donnes pour trouver le patient
     for (int i=0; i < NOMBRE_PATIENTS; i++){
+        
+        /*
+        Serial.print("i : ");
+        Serial.println(i);
+        Serial.print("Rfid bd : *");
+        Serial.print(tableau[i].RFID);
+        Serial.println("*");
+        Serial.print("rfid argument : *");
+        Serial.print(RFID);
+        Serial.println("*");
+        Serial.println("-------------------------------------");
+        */
+
         if (strcmp(RFID, tableau[i].RFID) == 0){
             position_tableau = i;
-            flashLed(PIN_VERT);
+            
+            //Serial.println("a trouvé la puce");
+            //flashLed(PIN_VERT);
             break;
         }
     }
@@ -349,12 +366,18 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
  
         //Changer temps_dernier_medicament pour le patient qui a recu son medicament
         tableau[position_tableau].temps_dernier_medicament = temps_maintenant;
+        
+        Serial.print("nbr méd #1 : ");
+        Serial.println(tableau[position_tableau].medicament1);
+        Serial.print("nbr méd #2 : ");
+        Serial.println(tableau[position_tableau].medicament2);
 
         //appeler fonction pour distribuer les bons medicaments pour le patient
-        distribuerPilules(tableau[position_tableau].medicament1,tableau[position_tableau].medicament2);
+        distribuerPilules(tableau[position_tableau].medicament1, tableau[position_tableau].medicament2);
         return 0;
     }
     else{
+        Serial.println("trop tôt");
         flashLed(PIN_ROUGE);
         return 0;//ou appeler servo-moteurs avec 0,0
     }
