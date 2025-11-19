@@ -16,6 +16,12 @@ CONSTANTES
 #define PIN_BOUTON_ON 32 
 #define PIN_BOUTON_EAU 33 
 #define PIN_CAPTEUR_IR 0
+#define SERVO_ID 0
+#define ANGLE_R1   0
+#define ANGLE_R2   180
+#define ANGLE_DROP 90
+#define DELAI_PICK 1000
+#define DELAI_DROP 2000
 
 //Definir nombre maximum de patients
 #define NOMBRE_PATIENTS 4

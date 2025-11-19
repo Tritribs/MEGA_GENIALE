@@ -11,8 +11,6 @@ char incoming;
 char i;
 bool bumperArr;
 
-
-
 void setup() 
 {
   Serial.begin(9600);
@@ -24,8 +22,8 @@ void setup()
   initBoutons();     
   initLeds();   
   initialisation_Tableau_Patient(tableauPatients); 
-  
 
+  initDistributeur();
   /*   
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
@@ -34,6 +32,13 @@ void setup()
 
 void loop() 
 {
+/*
+  cycleReservoir1();
+  delay(1000);
+
+  cycleReservoir2();
+  delay(1000);
+*/
   //departCodeMegaGenial();
   //testsTristan();
 

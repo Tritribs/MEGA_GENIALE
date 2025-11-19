@@ -422,8 +422,8 @@ Distributeur de pilules
 ******************************************************************************************************************************************/
 #define SERVO_ID 0
 
-#define ANGLE_R1   0
-#define ANGLE_R2   180
+#define ANGLE_R1   45
+#define ANGLE_R2   135
 #define ANGLE_DROP 90
 
 #define DELAI_PICK 1000
