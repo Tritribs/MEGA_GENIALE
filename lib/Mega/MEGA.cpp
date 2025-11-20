@@ -424,7 +424,7 @@ Distributeur de pilules
 
 #define ANGLE_R1   45
 #define ANGLE_R2   135
-#define ANGLE_DROP 90
+#define ANGLE_DROP 95
 
 #define DELAI_PICK 1000
 #define DELAI_DROP 2000

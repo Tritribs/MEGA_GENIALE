@@ -21,7 +21,7 @@ void setup()
   pinMode(41, OUTPUT);
   initBoutons();     
   initLeds();   
-  initialisation_Tableau_Patient(tableauPatients); 
+  initialisation_Tableau_Patient(tableauPatients);
 
   initDistributeur();
   /*   
@@ -32,13 +32,13 @@ void setup()
 
 void loop() 
 {
-/*
-  cycleReservoir1();
+
+  /*cycleReservoir1();
   delay(1000);
 
   cycleReservoir2();
   delay(1000);
-*/
+
   //departCodeMegaGenial();
   //testsTristan();
 
