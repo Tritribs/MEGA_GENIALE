@@ -32,14 +32,15 @@ void setup()
 
 void loop() 
 {
-
+  
+  departCodeMegaGenial();
   /*cycleReservoir1();
   delay(1000);
 
   cycleReservoir2();
   delay(1000);
 
-  //departCodeMegaGenial();
+
   //testsTristan();
 
   /*  
