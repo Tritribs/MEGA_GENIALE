@@ -15,8 +15,8 @@ PID
 const float distanceParPulse = 0.000147262 ; // roue 3 pouces, encodeur 3200 pulses
 const float Kp = 1.2;                     // gain PID
 const unsigned long interval = 50;        // ms
-const float vitesseAvance = 0.3;
-const float vitesseRotation = 0.25;
+const float vitesseAvance = 0.2;
+const float vitesseRotation = 0.12;
 
 // ---- VARIABLES PID ----
 float Vt0 = vitesseAvance;
@@ -158,25 +158,26 @@ void tourne(int angleDeg, bool tourneGauche) {
 SUIVEUR DE LIGNE ET CONNEXE
 ******************************************************************************************************************************************/
   
-void FOLLOW_THE_LINE(void)
-{
 
 #define MOTEUR_GAUCHE 0
 #define MOTEUR_DROITE 1
 
 // Pins capteurs
-#define CAP_GAUCHE 39//                    38
-#define CAP_MILIEU 40// rouler a l'envers, || mettre les vitesses negative et inerser les virages
-#define CAP_DROITE 38//                    39
+#define GAUCHE 39//                    
+#define MILIEU 40// 
+#define DROITE 38//                    
 
 // Vitesses
-float vitesseBase = 0.3;
-float correction = 0.15; 
+float vitesseBase = 0.20;
+float correction = 0.1; 
+
+void FOLLOW_THE_LINE(void)
+{
 
 
-    int EtatG = digitalRead(CAP_GAUCHE);
-    int EtatM = digitalRead(CAP_MILIEU);
-    int EtatD = digitalRead(CAP_DROITE);
+    int EtatG = digitalRead(GAUCHE);
+    int EtatM = digitalRead(MILIEU);
+    int EtatD = digitalRead(DROITE);
 
     
     Serial.print("G: "); Serial.print(EtatG);
@@ -203,7 +204,7 @@ float correction = 0.15;
     }
 
 
-    ///-----------------------------------
+    ///-------------Fonction Megagenial----------
     if(EtatD==0 && EtatM==0 && EtatG==0)
     {
         avance(6);
@@ -220,14 +221,18 @@ float correction = 0.15;
     // ---- virages ----
     if (EtatG == 0 && EtatM == 0) {
         // Virage 90° gauche
-        avance(6);
+        avance(1.8);
+        delay(500);
         tourne(90, true);
+        delay(500);
         return; 
     }
     else if (EtatD == 0 && EtatM == 0) {
         // Virage 90° droite
-        avance(6);
+        avance(1.8);
+        delay(500);
         tourne(90, false);
+        delay(500);
         return;
     }
 }
@@ -423,9 +428,9 @@ Distributeur de pilules
 ******************************************************************************************************************************************/
 #define SERVO_ID 0
 
-#define ANGLE_R1   0
-#define ANGLE_R2   180
-#define ANGLE_DROP 90
+#define ANGLE_R1   45
+#define ANGLE_R2   135
+#define ANGLE_DROP 95
 
 #define DELAI_PICK 1000
 #define DELAI_DROP 2000
@@ -502,7 +507,7 @@ void verseEauLogique(){
     int chronoEau = 0;
     int tempsMaxEau = 3000; //à changer pour ce que tristan aura trouvé
     int tempsDepart = millis();
-    int tempsAttente = 30000; //attend et si pas d'actions après 30 secondes, retourne suiveur de ligne
+    int tempsAttente = 60000; //attend et si pas d'actions après 30 secondes, retourne suiveur de ligne
 
     //loop pour attendre 30 secondes
     while (chronoEau < tempsMaxEau && (millis() - tempsDepart) < tempsAttente){
@@ -575,4 +580,31 @@ void attendRecharge(){
         
     }
     flashLed(PIN_VERT);
+}
+
+void testsTristan(){
+  
+  int EtatG = digitalRead(GAUCHE);
+  int EtatM = digitalRead(MILIEU);
+  int EtatD = digitalRead(DROITE);
+
+  //Affichage simple
+  Serial.print("G: "); Serial.print(EtatG);
+  Serial.print(" | M: "); Serial.print(EtatM);
+  Serial.print(" | D: "); Serial.println(EtatD);
+
+  // Affichage plus détaillé
+   if (EtatG == 0 && EtatM == 0 && EtatD == 0) {
+  Serial.println("TOUS les capteurs détectent la ligne !");
+  } 
+  else if (EtatG == 0 && EtatM == 0) {
+  Serial.println("Virage GAUCHE détecté");
+  } 
+  else if (EtatD == 0 && EtatM == 0) {
+  Serial.println("Virage DROITE détecté");
+  } 
+  else if (EtatM == 0) {
+  Serial.println("Robot centré sur la ligne");
+  }
+  delay(250);
 }

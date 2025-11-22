@@ -10,8 +10,7 @@ char id_tag[20];
 char incoming;
 char i;
 bool bumperArr;
-
-
+bool megaGenialStarted = false;
 
 void setup() 
 {
@@ -23,9 +22,10 @@ void setup()
   pinMode(41, OUTPUT);
   initBoutons();     
   initLeds();   
-  initialisation_Tableau_Patient(tableauPatients); 
-  
-    /*   
+  initialisation_Tableau_Patient(tableauPatients);
+
+  initDistributeur();
+  /*   
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
     */         
@@ -33,7 +33,18 @@ void setup()
 
 void loop() 
 {
-  //departCodeMegaGenial();
+  //POMPE_50ml();
+  //delay(2000);
+  //FOLLOW_THE_LINE();
+  //testsTristan();
+  departCodeMegaGenial();
+  /*cycleReservoir1();
+  delay(1000);
+ 
+  cycleReservoir2();
+  delay(1000);
+*/
+
   //testsTristan();
 
   /*  
@@ -45,44 +56,20 @@ void loop()
   */     
 }
 
+
+
 void departCodeMegaGenial(){
   bumperArr = ROBUS_IsBumper(3);
 
+  
   if (bumperArr)
+  {
+    megaGenialStarted=true;
+  }
+
+  if(megaGenialStarted== true)
   {
     FOLLOW_THE_LINE();
   }
-  
 }
-
-void testsTristan(){
-  
-  int EtatG = digitalRead(GAUCHE);
-  int EtatM = digitalRead(MILIEU);
-  int EtatD = digitalRead(DROITE);
-
-  //Affichage simple
-  Serial.print("G: "); Serial.print(EtatG);
-  Serial.print(" | M: "); Serial.print(EtatM);
-  Serial.print(" | D: "); Serial.println(EtatD);
-
-  // Affichage plus détaillé
-   if (EtatG == 0 && EtatM == 0 && EtatD == 0) {
-  Serial.println("TOUS les capteurs détectent la ligne !");
-  } 
-  else if (EtatG == 0 && EtatM == 0) {
-  Serial.println("Virage GAUCHE détecté");
-  } 
-  else if (EtatD == 0 && EtatM == 0) {
-  Serial.println("Virage DROITE détecté");
-  } 
-  else if (EtatM == 0) {
-  Serial.println("Robot centré sur la ligne");
-  }
-  delay(250);
-}
-
-
-
-
 
