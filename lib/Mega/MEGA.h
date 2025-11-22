@@ -34,10 +34,10 @@ void FOLLOW_THE_LINE();
 void POMPE_50ml();
 void debugCapteurs();  
 char* LectureRFID();
-
+void departCodeMegaGenial();
 void pompeON();
 void pompeOFF();
-   
+void testsTristan();
 void initLeds();
 void flashLed(int pin);
 int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]);
