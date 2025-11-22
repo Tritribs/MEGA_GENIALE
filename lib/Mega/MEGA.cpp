@@ -23,10 +23,9 @@ float Vt0 = vitesseAvance;
 float Vt1 = vitesseAvance;
 static unsigned long lastTime = 0;
 
-// ---- VARIABLES BANDE DE DONNÉES PATIENTS ----
+// ---- VARIABLES BASE DE DONNÉES PATIENTS ----
 struct patient tableauPatients[NOMBRE_PATIENTS];
-
-
+char idPharmacien[] = "ABC123"; //À CHANGER
 
 float vitesse = 0.4; // vitesse par défaut
 
@@ -319,7 +318,8 @@ void initialisation_Tableau_Patient(struct patient tableau[NOMBRE_PATIENTS]){
    struct patient patient2 = {"000088E89BFB", 1, 1, 1, 999999999};
    tableau[2] = patient2;
  
-   struct patient patient3 = {"ABC123", 1, 1, 2, 999999999};
+   struct patient patient3 = { "", 1, 1, 2, 999999999};
+    strcpy(patient3.RFID, idPharmacien);
    tableau[3] = patient3;
 }
  
@@ -374,6 +374,7 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
 
         //appeler fonction pour distribuer les bons medicaments pour le patient
         distribuerPilules(tableau[position_tableau].medicament1, tableau[position_tableau].medicament2);
+        verseEauLogique();
         return 0;
     }
     else{
@@ -485,7 +486,13 @@ void attendPuce(){
     while (puce == NULL){
         puce = LectureRFID();
     }
-    trouver_medicament(puce, tableauPatients);
+
+    if (strcmp(puce, idPharmacien) == 0)
+    {
+        attendRecharge();
+    } else {
+        trouver_medicament(puce, tableauPatients);
+    }
 }
 
 /*
@@ -536,4 +543,36 @@ void verseEauLogique(){
     }
     delay(3000);
 
+}
+
+/*
+Cette fonction est appelée lorsque la puce scannée est celle du pharmacien.
+Cette fonction attend que la recharge des médicaments soit complétée (donc que le bumper
+arrière soit pesé pour 3 secondes)
+*/
+void attendRecharge(){
+    int chrono = 0;
+    int tempsAppuyer = 3000; 
+    bool bumperArr = ROBUS_IsBumper(3);
+
+    //loop pour attendre que pèse 3 secondes
+    while (chrono < tempsAppuyer){
+        int ancienTemps = millis();
+
+        //loop pour calculer le nombre de temps que le bumper est appuyé
+        while(chrono < tempsAppuyer && bumperArr){
+            int tempsActuel = millis();
+        
+            chrono += (tempsActuel - ancienTemps);
+            ancienTemps = tempsActuel;
+            bumperArr = ROBUS_IsBumper(3);
+        }
+
+        if (chrono < tempsAppuyer)
+        {
+            chrono = 0;
+        }
+        
+    }
+    flashLed(PIN_VERT);
 }

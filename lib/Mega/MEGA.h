@@ -41,6 +41,7 @@ bool isButtonPressed(int pin);
 
 void attendPuce();
 void verseEauLogique();
+void attendRecharge();
 
 void initDistributeur();
 void distribuerPilules(int nbrMed1, int nbrMed2);

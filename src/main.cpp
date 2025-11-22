@@ -25,8 +25,7 @@ void setup()
   initLeds();   
   initialisation_Tableau_Patient(tableauPatients); 
   
-
-  /*   
+    /*   
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
   delay(300);           
     */         
@@ -43,10 +42,7 @@ void loop()
     Serial.print("Tag lu : ");
     Serial.println(tag);
   }
-  */
-  
-  
-     
+  */     
 }
 
 void departCodeMegaGenial(){
