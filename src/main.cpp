@@ -24,6 +24,8 @@ void setup()
   initLeds();   
   initialisation_Tableau_Patient(tableauPatients);
 
+  attendPuce();
+
   initDistributeur();
   /*   
   Serial.println("Test du ID-12 sur UART2 (RX2 / Digital 17)");         
@@ -37,7 +39,7 @@ void loop()
   //delay(2000);
   //FOLLOW_THE_LINE();
   //testsTristan();
-  departCodeMegaGenial();
+  //departCodeMegaGenial();
   /*cycleReservoir1();
   delay(1000);
  

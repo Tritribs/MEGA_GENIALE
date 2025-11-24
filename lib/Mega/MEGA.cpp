@@ -25,7 +25,7 @@ static unsigned long lastTime = 0;
 
 // ---- VARIABLES BASE DE DONNÉES PATIENTS ----
 struct patient tableauPatients[NOMBRE_PATIENTS];
-char idPharmacien[] = "ABC123"; //À CHANGER
+char idPharmacien[] = "1600CA59E86D"; //À CHANGER
 
 float vitesse = 0.4; // vitesse par défaut
 
@@ -291,7 +291,7 @@ char* LectureRFID() {
             AX_BuzzerOFF();
             incoming = false;
             id_tag[i-2] = '\0'; //faut mettre i - 2 sinon il y a des caractères random à la fin 
-            //Serial.println(id_tag);
+            Serial.println(id_tag);
               // terminer la chaîne C
             return id_tag;      // ***retourner le char[] directement***
 
@@ -558,14 +558,15 @@ arrière soit pesé pour 3 secondes)
 void attendRecharge(){
     int chrono = 0;
     int tempsAppuyer = 3000; 
-    bool bumperArr = ROBUS_IsBumper(3);
+    bool bumperArr;
 
     //loop pour attendre que pèse 3 secondes
     while (chrono < tempsAppuyer){
         int ancienTemps = millis();
+        bumperArr = ROBUS_IsBumper(3);
 
         //loop pour calculer le nombre de temps que le bumper est appuyé
-        while(chrono < tempsAppuyer && bumperArr){
+        while((chrono < tempsAppuyer) && bumperArr){
             int tempsActuel = millis();
         
             chrono += (tempsActuel - ancienTemps);
