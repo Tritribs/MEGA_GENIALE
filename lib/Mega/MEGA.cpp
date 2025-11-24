@@ -487,17 +487,26 @@ Cette fonction doit être appelée lorsque le suiveur de ligne est arrivé à la
 */
 void attendPuce(){
     char* puce = LectureRFID();
+    int chrono = 0;
+    int tempsAttente = 60000; 
 
-    while (puce == NULL){
+    //loop pour attendre pendant 1 minute (si rien se passe, part)
+
+    int ancienTemps = millis();
+    while (puce == NULL && chrono < tempsAttente){
+        int tempsActuel = millis();
+    
+        chrono += (tempsActuel - ancienTemps);
+        ancienTemps = tempsActuel;
         puce = LectureRFID();
     }
-
     if (strcmp(puce, idPharmacien) == 0)
     {
         attendRecharge();
     } else {
         trouver_medicament(puce, tableauPatients);
     }
+
 }
 
 /*
