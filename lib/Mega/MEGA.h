@@ -54,7 +54,6 @@ void distribuerPilules(int nbrMed1, int nbrMed2);
 void cycleReservoir1();
 void cycleReservoir2();
 
-
 /*************
 DEFINITION DE LA STRUCTURE
 **************/
