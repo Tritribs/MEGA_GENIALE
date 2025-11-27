@@ -362,7 +362,7 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
     //Si patient pas trouve dans la base de donnees
     if (position_tableau == -1){
         flashLed(PIN_ROUGE);
-        return 0;//Sortir de la fonction et ne pas donner de medicaments ou appeler servo-moteurs avec 0,0
+        return 0;//Sortir de la fonction et ne pas donner de medicaments
     }
    
     //Verifier si ca fait assez de temps depuis le dernier medicament
@@ -386,7 +386,7 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
     else{
         Serial.println("trop tôt");
         flashLed(PIN_ROUGE);
-        return 0;//ou appeler servo-moteurs avec 0,0
+        return 0;
     }
 }
 
