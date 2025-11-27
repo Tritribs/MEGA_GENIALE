@@ -31,6 +31,7 @@ extern struct patient tableauPatients[NOMBRE_PATIENTS];
 FONCTION
 **************/
 void FOLLOW_THE_LINE();
+bool vraiSiPatient(int EtatG, int EtatM, int EtatD);
 void POMPE_50ml();
 void debugCapteurs();  
 char* LectureRFID();

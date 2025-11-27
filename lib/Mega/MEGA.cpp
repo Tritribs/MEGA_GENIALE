@@ -186,15 +186,15 @@ void FOLLOW_THE_LINE(void)
     Serial.print(" | D: "); Serial.println(EtatD);
 
     // ---- états ----
-    if (EtatG == 0) { // Capteur gauche détecte ligne
+    if (EtatG == 1) { // Capteur gauche détecte ligne
         MOTOR_SetSpeed(MOTEUR_GAUCHE, vitesseBase - correction);
         MOTOR_SetSpeed(MOTEUR_DROITE, vitesseBase + correction);
     }
-    else if (EtatM == 0) { // Capteur milieu détecte ligne
+    else if (EtatM == 1) { // Capteur milieu détecte ligne
         MOTOR_SetSpeed(MOTEUR_GAUCHE, vitesseBase);
         MOTOR_SetSpeed(MOTEUR_DROITE, vitesseBase);
     }
-    else if (EtatD == 0) { // Capteur droite détecte ligne
+    else if (EtatD == 1) { // Capteur droite détecte ligne
         MOTOR_SetSpeed(MOTEUR_GAUCHE, vitesseBase + correction);
         MOTOR_SetSpeed(MOTEUR_DROITE, vitesseBase - correction);
     }
@@ -206,7 +206,7 @@ void FOLLOW_THE_LINE(void)
 
 
     ///-------------Fonction Megagenial----------
-    if(EtatD==0 && EtatM==0 && EtatG==0)
+    if(EtatD==1 && EtatM==1 && EtatG==1)
     {
         avance(6);
         MOTOR_SetSpeed(1,0);
@@ -220,22 +220,54 @@ void FOLLOW_THE_LINE(void)
 
 
     // ---- virages ----
-    if (EtatG == 0 && EtatM == 0) {
+    if (EtatG == 1 && EtatM == 1) {
         // Virage 90° gauche
-        avance(1.8);
-        delay(500);
-        tourne(90, true);
-        delay(500);
+        if(vraiSiPatient(EtatG, EtatM, EtatD)){
+            avance(6);
+            MOTOR_SetSpeed(1,0);
+            MOTOR_SetSpeed(0,0);
+            delay(2500);
+            tourne(180, true);
+            attendPuce(); //démarre séquence puce
+            tourne(90, false);
+        } else {
+            avance(1.6);
+            delay(500);
+            tourne(90, true);
+            delay(500);
+        }
         return; 
     }
-    else if (EtatD == 0 && EtatM == 0) {
+    else if (EtatD == 1 && EtatM == 1) {
         // Virage 90° droite
-        avance(1.8);
-        delay(500);
-        tourne(90, false);
-        delay(500);
+        if(vraiSiPatient(EtatG, EtatM, EtatD)){
+            avance(6);
+            MOTOR_SetSpeed(1,0);
+            MOTOR_SetSpeed(0,0);
+            delay(2500);
+            tourne(180, true);
+            attendPuce(); //démarre séquence puce
+            tourne(90, false);
+        } else {
+            avance(1.6);
+            delay(500);
+            tourne(90, false);
+            delay(500);
+        }
         return;
     }
+}
+
+bool vraiSiPatient(int EtatG, int EtatM, int EtatD){
+    avance(0.2);
+    EtatG = digitalRead(GAUCHE);
+    EtatM = digitalRead(MILIEU);
+    EtatD = digitalRead(DROITE);
+
+    if(EtatD==1 && EtatM==1 && EtatG==1){
+        return true;
+    } 
+    return false;
 }
 
 
@@ -380,6 +412,7 @@ int trouver_medicament(char RFID[], struct patient tableau[NOMBRE_PATIENTS]){
 
         //appeler fonction pour distribuer les bons medicaments pour le patient
         distribuerPilules(tableau[position_tableau].medicament1, tableau[position_tableau].medicament2);
+        Serial.println("après distribution avant appel verse eau logique");
         verseEauLogique();
         return 0;
     }
@@ -479,7 +512,7 @@ void attendPuce(){
     char* puce = LectureRFID();
     int chrono = 0;
     int tempsAttente = 30000; 
-
+    /*
     Serial.println("entre dans fonction attend puce");
     Serial.println("puce : ");
     Serial.println(puce);
@@ -487,16 +520,18 @@ void attendPuce(){
     Serial.println(chrono);
     Serial.println("temps attente : ");
     Serial.println(tempsAttente);
+    */
 
     //loop pour attendre pendant 1 minute (si rien se passe, part)
     int ancienTemps = millis();
     while (puce == NULL && chrono < tempsAttente){
         int tempsActuel = millis();
-
+        /*
         Serial.println("entre dans while de la fonction attend puce");
         Serial.println(puce == NULL);
         Serial.println(chrono<tempsAttente);
-    
+        */
+
         chrono += (tempsActuel - ancienTemps);
         ancienTemps = tempsActuel;
         puce = LectureRFID();
@@ -516,25 +551,38 @@ Cette fonction gère le versage d'eau, et le timer pour cette action
 void verseEauLogique(){
     int chronoEau = 0;
     int tempsMaxEau = 3000;
-    int tempsDepart = millis();
+    unsigned long tempsDepart = millis(); 
     int tempsAttente = 30000; //attend et si pas d'actions après 30 sec, retourne suiveur de ligne
+    Serial.println("entre verse eau logique");
+
+    Serial.println("conditions pour premier while : ");
+    Serial.println(chronoEau < tempsMaxEau);
+    Serial.println((millis() - tempsDepart) < tempsAttente);
+
+    Serial.println("temps départ : ");
+    Serial.println(tempsDepart);
+    Serial.println("temps attente : ");
+    Serial.println(tempsAttente);
+    Serial.println("millia : ");
+    Serial.println(millis());
 
     //loop pour attendre 30 secondes
-    while (chronoEau < tempsMaxEau && (millis() - tempsDepart) < tempsAttente){
-        int ancienTemps = millis();
+    while (chronoEau < tempsMaxEau && ((millis() - tempsDepart) < tempsAttente)){
+        unsigned long ancienTemps = millis();
 
+        Serial.println("conditions pour deuxième while : ");
         Serial.println(isButtonPressed(PIN_BOUTON_EAU));
         Serial.println(chronoEau < tempsMaxEau);
         Serial.println(ROBUS_IsBumper(3));
 
         //loop pour verser eau et calculer temps
         while(isButtonPressed(PIN_BOUTON_EAU) && (chronoEau < tempsMaxEau) && ROBUS_IsBumper(3)){
-            int tempsActuel = millis();
+            unsigned long tempsActuel = millis();
         
-            tempsDepart = 0;
+            tempsDepart = millis();
             chronoEau += (tempsActuel - ancienTemps);
 
-            /*
+            
             Serial.print("chrono eau : ");
             Serial.println(chronoEau);
             Serial.print("ancien temps : ");
@@ -542,7 +590,7 @@ void verseEauLogique(){
             Serial.print("temps actuel : ");
             Serial.println(tempsActuel);
             Serial.println("**********************************************");
-            */
+            
 
             ancienTemps = tempsActuel;
 
