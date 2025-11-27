@@ -488,13 +488,24 @@ Cette fonction doit être appelée lorsque le suiveur de ligne est arrivé à la
 void attendPuce(){
     char* puce = LectureRFID();
     int chrono = 0;
-    int tempsAttente = 60000; 
+    int tempsAttente = 30000; 
+
+    Serial.println("entre dans fonction attend puce");
+    Serial.println("puce : ");
+    Serial.println(puce);
+    Serial.println("chrono : ");
+    Serial.println(chrono);
+    Serial.println("temps attente : ");
+    Serial.println(tempsAttente);
 
     //loop pour attendre pendant 1 minute (si rien se passe, part)
-
     int ancienTemps = millis();
     while (puce == NULL && chrono < tempsAttente){
         int tempsActuel = millis();
+
+        Serial.println("entre dans while de la fonction attend puce");
+        Serial.println(puce == NULL);
+        Serial.println(chrono<tempsAttente);
     
         chrono += (tempsActuel - ancienTemps);
         ancienTemps = tempsActuel;
@@ -514,9 +525,9 @@ Cette fonction gère le versage d'eau, et le timer pour cette action
 */
 void verseEauLogique(){
     int chronoEau = 0;
-    int tempsMaxEau = 3000; //à changer pour ce que tristan aura trouvé
+    int tempsMaxEau = 3000;
     int tempsDepart = millis();
-    int tempsAttente = 60000; //attend et si pas d'actions après 30 secondes, retourne suiveur de ligne
+    int tempsAttente = 30000; //attend et si pas d'actions après 30 sec, retourne suiveur de ligne
 
     //loop pour attendre 30 secondes
     while (chronoEau < tempsMaxEau && (millis() - tempsDepart) < tempsAttente){
@@ -555,8 +566,9 @@ void verseEauLogique(){
             flashLed(PIN_ROUGE);
         }
     }
+    //Serial.println("fini le while avant delay");
     delay(3000);
-
+    //Serial.println("FINI après delay");
 }
 
 /*
