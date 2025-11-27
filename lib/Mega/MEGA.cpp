@@ -27,6 +27,7 @@ static unsigned long lastTime = 0;
 struct patient tableauPatients[NOMBRE_PATIENTS];
 char idPharmacien[] = "1600CA59E86D"; //À CHANGER
 
+
 float vitesse = 0.4; // vitesse par défaut
 
 // conversion cm -> ticks encodeur
